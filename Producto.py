@@ -236,3 +236,34 @@ class Producto:
         else:
             print("opcion no valida")
             return
+        
+        
+def main():
+    while True:
+        print("\n--- Menú de Productos ---")
+        print("1. Ver productos")
+        print("2. Consultar producto por código")
+        print("3. Consultar producto por nombre")
+        print("4. Consultar productos por categoría")
+        print("5. Salir")
+        opcion = input("Seleccione una opción: ")
+        
+        if opcion == "1":
+            Producto.ver_productos()
+        elif opcion == "2":
+            codigo = input("Ingrese el código del producto: ")
+            Producto.consultar_codigo(codigo)
+        elif opcion == "3":
+            nombre = input("Ingrese el nombre del producto: ")
+            Producto.consultar_nombre(nombre)
+        elif opcion == "4":
+            categoria = input("Ingrese la categoría del producto: ")
+            Producto.consultar_categoria(categoria)
+        elif opcion == "5":
+            print("Saliendo...")
+            break
+        else:
+            print("Opción no válida, intente nuevamente.")
+            
+if __name__ == "__main__":
+    main()
