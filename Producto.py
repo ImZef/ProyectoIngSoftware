@@ -78,12 +78,14 @@ class Producto:
             f"  Categoría: {self.get_categoria()}\n"
             f"  Descripción: {self.get_descripcion()}\n"
             f"  Precio: ${self.get_precio()}\n"
-            f"  Cantidad: {self.get_cantidad()}\n"
+            f"  Cantidad: {self.get_cantidad()} {'[AGOTADO]' if self.get_cantidad() == 0 else ''}\n"
             f"  Disponibilidad: {'Sí' if self.get_disponibilidad() else 'No'}\n"
             f"  Fecha de Vencimiento: {self.get_fecha_vencimiento()}"
         )
+        
     @classmethod
     def ver_productos(cls):
+        print("----------------------------------------------------------------------------------------------------------")
         print("Productos en inventario: ")
         print("----------------------------------------------------------------------------------------------------------")
         for producto in cls.productos:
@@ -96,12 +98,12 @@ class Producto:
             if producto.get_codigo() == int(codigo):
                 print(producto)
                 return
-            
+        print("------------------------------------------")
         print("Codigo de producto no encontrado")
         print("------------------------------------------")
         print("Seleccione una de las siguientes opciones:")
         print("1: Ver inventario completo")
-        print("2: Crear nueva entrad en el inventario")
+        print("2: Crear nueva entrada en el inventario")
         print("3: salir")
         print("------------------------------------------")
         opcion = int(input("escriba su opcion aqui: "))
@@ -147,12 +149,12 @@ class Producto:
                 print(producto)
         if c: # Consulta sexitosa, se retorna
             return
-        
+        print("------------------------------------------")
         print("Categoria de productos no encontrada")
         print("------------------------------------------")
         print("Seleccione una de las siguientes opciones:")
         print("1: Ver inventario completo")
-        print("2: Crear nueva entrad en el inventario")
+        print("2: Crear nueva entrada en el inventario")
         print("3: salir")
         print("------------------------------------------")
         opcion = int(input("escriba su opcion aqui: "))
@@ -195,12 +197,12 @@ class Producto:
             if producto.get_nombre() == nombre:
                 print(producto)
                 return
-            
+        print("------------------------------------------")
         print("Nombre de producto no encontrado")
         print("------------------------------------------")
         print("Seleccione una de las siguientes opciones:")
         print("1: Ver inventario completo")
-        print("2: Crear nueva entrad en el inventario")
+        print("2: Crear nueva entrada en el inventario")
         print("3: salir")
         print("------------------------------------------")
         opcion = int(input("escriba su opcion aqui: "))
