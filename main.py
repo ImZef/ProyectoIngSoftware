@@ -1,8 +1,9 @@
 from Producto import Producto
 from Inventario import Inventario
-from Inventario_menu import menu_inventario
+from Inventario_menu import MenuInventario
 from Registrar import HistoriaClinica, main as historial_main
-from Venta import menu_ventas
+from Venta import Venta
+from Venta_menu import MenuVentas
 
 # Crear el inventario
 mi_inventario = Inventario()
@@ -89,7 +90,9 @@ def main():
 
         if opcion == "1":
             print("\n Accediendo al sistema de inventario...")
-            menu_inventario(mi_inventario)
+            menu_inventario = MenuInventario(mi_inventario)
+            menu_inventario.mostrar_menu()
+
 
         elif opcion == "2":
             print("\n Accediendo al sistema de historial clínico...")
@@ -97,7 +100,8 @@ def main():
 
         elif opcion == "3":
             print("\n Accediendo al menú de ventas...")
-            menu_ventas()
+            menu_ventas = MenuVentas(mi_inventario)
+            menu_ventas.mostrar_menu()
 
         elif opcion == "0":
             print("\n Gracias por usar el Sistema Veterinario. ¡Hasta pronto!")

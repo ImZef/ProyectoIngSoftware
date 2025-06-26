@@ -6,22 +6,24 @@ class MenuVentas:
 
     def mostrar_menu(self):
         while True:
-            print("\n=== MENÚ DE VENTAS ===")
+            print("\n--- Menú de Ventas ---")
             print("1. Registrar nueva venta")
             print("2. Ver ventas registradas")
-            print("0. Volver al menú principal")
-
+            print("3. Editar venta")
+            print("4. Anular venta")
+            print("5. Salir")
             opcion = input("Seleccione una opción: ")
 
             if opcion == "1":
-                Venta.registrar_venta(self.inventario)
-
+                Venta.registrar_venta()
             elif opcion == "2":
                 Venta.ver_ventas()
-
-            elif opcion == "0":
-                print("Volviendo al menú principal...")
+            elif opcion == "3":
+                Venta.editar_venta()
+            elif opcion == "4":
+                Venta.anular_venta()
+            elif opcion == "5":
+                print("Saliendo del módulo de ventas.")
                 break
-
             else:
-                print("❌ Opción inválida. Intente nuevamente.")
+                print("Opción inválida.")
