@@ -1,5 +1,6 @@
 from Producto import Producto, main as producto_main
 from Registrar import HistoriaClinica, main as historial_main
+from Venta import Venta
 
 # Datos de muestra para productos
 producto1 = Producto(1, "Leche", "Lácteos", "Leche entera 1L", 4000, 20, "19/08/2025")
@@ -21,7 +22,8 @@ def main():
         print("\n=== MENÚ PRINCIPAL ===")
         print("1. Sistema de Inventario (Productos)")
         print("2. Sistema de Historial Clínico")
-        print("3. Salir")
+        print("3. Menú de Ventas")
+        print("0. Salir")
         
         opcion = input("Seleccione una opción (1-3): ")
         
@@ -32,6 +34,9 @@ def main():
             print("\nAccediendo al sistema de historial clínico...")
             historial_main()
         elif opcion == "3":
+            print("\nAccediendo al menú de ventas...")
+            menu_ventas()
+        elif opcion == "0":
             print("\n¡Gracias por usar el Sistema Veterinario! Hasta pronto.")
             break
         else:
