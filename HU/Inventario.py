@@ -14,6 +14,9 @@ class Inventario:
         print("\n--- Listado de productos ---")
         for producto in self.productos:
             print(producto)
+            if producto.get_cantidad() < 5:
+                print("⚠️  Producto próximo a agotarse (stock bajo)\n")
+
 
     def buscar_por_codigo(self, codigo):
         for p in self.productos:

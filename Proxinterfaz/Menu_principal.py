@@ -11,10 +11,10 @@ class MenuPrincipal:
     def mostrar_menu(self):
         while True:
             print("\n=== MENÚ PRINCIPAL ===")
-            print("1. Sistema de Inventario (Productos)")
-            print("2. Sistema de Historial Clínico")
-            print("3. Menú de Ventas")
-            print("4. Sistema de Registro de Clientes y Necesidades")
+            print("1. Sistema de Registro de Clientes y Necesidades")
+            print("2. Menú de Ventas")
+            print("3. Sistema de Historial Clínico")
+            print("4. Sistema de Inventario (Productos)")
             print("0. Salir")
 
             opcion = input("Seleccione una opción (0-4): ")

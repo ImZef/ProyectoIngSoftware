@@ -8,90 +8,128 @@ class MenuInventario:
     def mostrar_menu(self):
         while True:
             print("\n--- Menú Inventario ---")
-            print("1. Consultar producto ")
+            print("1. Consultar producto (HU06)")
             print("2. Ver todos los productos")
             print("3. Actualizar stock")
             print("4. Ver historial de stock")
+            print("5. Crear nuevo producto")
             print("0. Volver")
 
             opcion = input("Elige opción: ")
 
             if opcion == "1":
-                self.consultar_producto()
+                self.mostrar_consulta_producto()
             elif opcion == "2":
                 self.inventario.listar_productos()
             elif opcion == "3":
-                cod = input("Código: ")
-                nueva_cant = int(input("Nueva cantidad: "))
-                motivo = input("Motivo: ")
-                self.inventario.actualizar_stock(cod, nueva_cant, motivo)
+                self.actualizar_stock()
             elif opcion == "4":
                 self.inventario.mostrar_historial()
+            elif opcion == "5":
+                self.crear_nuevo_producto()
             elif opcion == "0":
                 break
             else:
-                print("Opción inválida.")
+                print(" Opción inválida.")
 
-    # === CONSULTAR PRODUCTO CON TODOS LOS CASOS DE LA HU06 ===
+    def actualizar_stock(self):
+        print("\n=== ACTUALIZAR STOCK ===")
+
+        producto = self.consultar_producto()
+        if not producto:
+            return
+
+        try:
+            nueva_cant = int(input("Nueva cantidad: "))
+            if nueva_cant < 0:
+                print(" La cantidad no puede ser negativa.")
+                return
+        except ValueError:
+            print(" Error: La cantidad debe ser un número entero.")
+            return
+
+        motivo = input("Motivo de actualización: ").strip()
+        if not motivo:
+            print(" Motivo requerido.")
+            return
+
+        self.inventario.actualizar_stock(producto.get_codigo(), nueva_cant, motivo)
+
+        if nueva_cant < 5:
+            print(" ADVERTENCIA: Producto próximo a agotarse (menos de 5 unidades disponibles).")
+
     def consultar_producto(self):
-        print("\n=== CONSULTAR PRODUCTO ===")
-        modo_busqueda = input("Buscar por (1) Código, (2) Nombre, (3) Categoría: ")
+        print("\n=== BUSCAR PRODUCTO ===")
+        modo_busqueda = input("Buscar por (1) Código, (2) Nombre, (3) Categoría: ").strip()
 
         producto = None
         if modo_busqueda == "1":
-            codigo = input("Ingrese código del producto: ")
-            producto = self.inventario.buscar_por_codigo(codigo)
+            codigo = input("Código: ")
+            if codigo.isdigit():
+                producto = self.inventario.buscar_por_codigo(codigo)
+            else:
+                print(" El código debe ser numérico.")
+                return None
+
         elif modo_busqueda == "2":
-            nombre = input("Ingrese nombre del producto: ")
+            nombre = input("Nombre del producto: ").strip()
             producto = self.inventario.buscar_por_nombre(nombre)
+
         elif modo_busqueda == "3":
-            categoria = input("Ingrese categoría: ")
+            categoria = input("Categoría del producto: ").strip()
             productos = self.inventario.buscar_por_categoria(categoria)
             if productos:
-                print("\nProductos encontrados en categoría:")
+                print("\nProductos encontrados en esa categoría:")
                 for p in productos:
                     print(p)
             else:
-                print("No hay productos registrados en esa categoría.")
-            return
-        else:
-            print("Opción no válida.")
-            return
+                print(" No se encontraron productos en esa categoría.")
+            return None
 
-        # Verificar resultado de búsqueda
+        else:
+            print(" Opción inválida.")
+            return None
+
         if producto:
             print("\n Producto encontrado:")
             print(producto)
-
-            if producto.get_cantidad() > 0:
-                print(" Producto disponible para venta.")
-            else:
-                print(" Producto AGOTADO.")
-                respuesta = input("¿Desea programar reposición? (s/n): ").lower()
-                if respuesta == 's':
-                    try:
-                        nueva_cant = int(input("Ingrese cantidad a reponer: "))
-                        motivo = input("Motivo de reposición: ")
-                        self.inventario.actualizar_stock(producto.get_codigo(), nueva_cant, motivo)
-                    except ValueError:
-                        print(" Error: la cantidad debe ser numérica.")
         else:
-            print(" Producto NO registrado en el sistema.")
+            print(" Producto no encontrado.")
+
+        return producto
+
+    def mostrar_consulta_producto(self):
+        producto = self.consultar_producto()
+        if not producto:
             respuesta = input("¿Desea registrarlo ahora? (s/n): ").lower()
             if respuesta == 's':
-                try:
-                    nuevo_codigo = int(input("Código: "))
-                    nuevo_nombre = input("Nombre: ")
-                    nueva_categoria = input("Categoría: ")
-                    nueva_desc = input("Descripción: ")
-                    nuevo_precio = float(input("Precio: "))
-                    nueva_cantidad = int(input("Cantidad inicial: "))
-                    nueva_fecha = input("Fecha de vencimiento (dd/mm/aaaa o N/A): ")
+                self.crear_nuevo_producto()
 
-                    nuevo_producto = Producto(nuevo_codigo, nuevo_nombre, nueva_categoria,
-                                              nueva_desc, nuevo_precio, nueva_cantidad, nueva_fecha)
-                    self.inventario.agregar_producto(nuevo_producto)
-                    self.inventario.guardar_en_json()
-                    print(" Producto registrado correctamente.")
-                except Exception as e:
-                    print(f" Error al registrar producto: {e}")
+    def crear_nuevo_producto(self):
+        print("\n=== CREAR NUEVO PRODUCTO ===")
+        try:
+            codigo = int(input("Código: "))
+            if self.inventario.buscar_por_codigo(codigo):
+                print(" Ya existe un producto con ese código.")
+                return
+
+            nombre = input("Nombre: ").strip()
+            if self.inventario.buscar_por_nombre(nombre):
+                print(" Ya existe un producto con ese nombre.")
+                return
+
+            categoria = input("Categoría: ")
+            descripcion = input("Descripción: ")
+            precio = float(input("Precio: "))
+            cantidad = int(input("Cantidad inicial: "))
+            fecha_vencimiento = input("Fecha de vencimiento (dd/mm/aaaa o N/A): ")
+
+            nuevo_producto = Producto(codigo, nombre, categoria, descripcion, precio, cantidad, fecha_vencimiento)
+            self.inventario.agregar_producto(nuevo_producto)
+            self.inventario.guardar_en_json()
+            print(" Producto creado y guardado exitosamente.")
+
+        except ValueError:
+            print(" Error: Datos numéricos inválidos.")
+        except Exception as e:
+            print(f" Error al crear producto: {e}")
