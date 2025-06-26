@@ -34,9 +34,16 @@ class Venta:
     @classmethod
     def registrar_venta(cls):
         print("\n--- Registrar nueva venta ---")
-        cliente = input("Nombre del cliente: ")
-        forma_pago = input("Forma de pago (efectivo, tarjeta, etc.): ")
-        
+        while True:
+            cliente = input("Nombre del cliente: ").strip()
+            if cliente:
+                break
+            print("El nombre del cliente no puede estar vacío.")
+        while True:
+            forma_pago = input("Forma de pago (efectivo, tarjeta): ").strip().lower()
+            if forma_pago in ("efectivo", "tarjeta"):
+                break
+            print("Método de pago no válido. Usa 'efectivo' o 'tarjeta'.")
         fecha_input = input("Fecha de venta (dd/mm/aaaa) o Enter para usar fecha actual: ")
         if fecha_input.strip():
             try:
