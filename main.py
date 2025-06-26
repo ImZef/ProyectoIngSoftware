@@ -1,6 +1,6 @@
 from Producto import Producto, main as producto_main
 from Registrar import HistoriaClinica, main as historial_main
-from Venta import Venta
+from Venta import menu_ventas
 
 # Datos de muestra para productos
 producto1 = Producto(1, "Leche", "Lácteos", "Leche entera 1L", 4000, 20, "19/08/2025")
