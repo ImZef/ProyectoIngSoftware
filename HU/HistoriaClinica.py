@@ -45,7 +45,7 @@ class HistoriaClinica:
         }
 
         self._registros.append(registro)
-        print("Registro clínico agregado con éxito.\n")
+        #print("Registro clínico agregado con éxito.\n")
         
     def ver_historial(self):
         print(f"\nHistorial clínico de {self._nombre_mascota} (Cliente: {self._nombre_cliente}) (ID: {self._id_cliente}):")

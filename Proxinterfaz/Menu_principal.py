@@ -20,21 +20,20 @@ class MenuPrincipal:
             opcion = input("Seleccione una opción (0-4): ")
 
             if opcion == "1":
-                menu_inventario = MenuInventario(self.inventario)
-                menu_inventario.mostrar_menu()
-
-            elif opcion == "2":
-                menu_historialclinico = MenuHistorialClinico()
-                menu_historialclinico.mostrar_menu()
-
-            elif opcion == "3":
-                menu_ventas = MenuVentas(self.inventario)
-                menu_ventas.mostrar_menu()
-
-            elif opcion == "4":
                 menu_registro = MenuRegistros(self.inventario)
                 menu_registro.mostrar_menu()
 
+            elif opcion == "2":
+                menu_ventas = MenuVentas(self.inventario)
+                menu_ventas.mostrar_menu()
+
+            elif opcion == "3":
+                menu_historialclinico = MenuHistorialClinico()
+                menu_historialclinico.mostrar_menu()
+
+            elif opcion == "4":
+                menu_inventario = MenuInventario(self.inventario)
+                menu_inventario.mostrar_menu()
             elif opcion == "0":
                 print("Gracias por usar el Sistema Veterinario. ¡Hasta pronto!")
                 break
