@@ -1,9 +1,7 @@
-from Producto import Producto
-from Inventario import Inventario
-from Inventario_menu import MenuInventario
-from Registrar import HistoriaClinica, main as historial_main
-from Venta import Venta
-from Venta_menu import MenuVentas
+from HU.Producto import Producto
+from HU.Inventario import Inventario
+from Proxinterfaz.Menu_principal import MenuPrincipal
+from HU.HistoriaClinica import HistoriaClinica
 
 # Crear el inventario
 mi_inventario = Inventario()
@@ -75,40 +73,10 @@ historia8.registrar_diagnostico(
     "Aplicar sobre el lomo una vez al mes durante la temporada de lluvias"
 )
 
-# ====== Menú principal ======
+# ==== Iniciar Menú Principal ====
 def main():
-    print("\n ¡Bienvenido al Sistema de Gestión Veterinaria!")
-
-    while True:
-        print("\n=== MENÚ PRINCIPAL ===")
-        print("1. Sistema de Inventario (Productos)")
-        print("2. Sistema de Historial Clínico")
-        print("3. Menú de Ventas")
-        print("0. Salir")
-
-        opcion = input("Seleccione una opción (0-3): ")
-
-        if opcion == "1":
-            print("\n Accediendo al sistema de inventario...")
-            menu_inventario = MenuInventario(mi_inventario)
-            menu_inventario.mostrar_menu()
-
-
-        elif opcion == "2":
-            print("\n Accediendo al sistema de historial clínico...")
-            historial_main()
-
-        elif opcion == "3":
-            print("\n Accediendo al menú de ventas...")
-            menu_ventas = MenuVentas(mi_inventario)
-            menu_ventas.mostrar_menu()
-
-        elif opcion == "0":
-            print("\n Gracias por usar el Sistema Veterinario. ¡Hasta pronto!")
-            break
-
-        else:
-            print("Opción inválida. Por favor, seleccione una opción válida.")
+    menu_principal = MenuPrincipal(mi_inventario)
+    menu_principal.mostrar_menu()
 
 if __name__ == "__main__":
     main()

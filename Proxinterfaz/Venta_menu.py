@@ -1,4 +1,4 @@
-from Venta import Venta
+from HU.Venta import Venta
 
 class MenuVentas:
     def __init__(self, inventario):
