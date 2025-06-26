@@ -1,7 +1,8 @@
 from Proxinterfaz.Inventario_menu import MenuInventario
 from Proxinterfaz.Venta_menu import MenuVentas
 from Proxinterfaz.Registro_menu import MenuRegistros
-from HU.HistoriaClinica import main as historial_main
+from Proxinterfaz.Historialclinico_menu import MenuHistorialClinico
+
 
 class MenuPrincipal:
     def __init__(self, inventario):
@@ -23,7 +24,8 @@ class MenuPrincipal:
                 menu_inventario.mostrar_menu()
 
             elif opcion == "2":
-                historial_main()
+                menu_historialclinico = MenuHistorialClinico()
+                menu_historialclinico.mostrar_menu()
 
             elif opcion == "3":
                 menu_ventas = MenuVentas(self.inventario)

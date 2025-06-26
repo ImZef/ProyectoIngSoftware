@@ -1,7 +1,8 @@
 from HU.Producto import Producto
 from HU.Inventario import Inventario
-from Proxinterfaz.Menu_principal import MenuPrincipal
 from HU.HistoriaClinica import HistoriaClinica
+from Proxinterfaz.Menu_principal import MenuPrincipal
+
 
 # Crear el inventario
 mi_inventario = Inventario()
