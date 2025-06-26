@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
-from Producto import Producto
+from .Producto import Producto
+
 
 class Inventario:
     def __init__(self):
