@@ -1,0 +1,10 @@
+[
+    {
+        "codigo_producto": 121,
+        "nombre_producto": "Ivermectina 1%",
+        "stock_anterior": 20,
+        "nuevo_stock": 15,
+        "motivo": "ventas",
+        "fecha": "25/06/2025 23:09:49"
+    }
+]

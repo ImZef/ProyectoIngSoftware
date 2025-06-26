@@ -1,8 +1,13 @@
-from Producto import Producto, main as producto_main
+from Producto import Producto
+from Inventario import Inventario
+from Inventario_menu import menu_inventario
 from Registrar import HistoriaClinica, main as historial_main
 from Venta import menu_ventas
 
-# Datos de muestra para productos
+# Crear el inventario
+mi_inventario = Inventario()
+
+# ====== Datos de muestra para productos ======
 producto1 = Producto(121, "Ivermectina 1%", "Desparasitante", "Antiparasitario inyectable de amplio espectro", 150000, 20, "19/08/2027")
 producto2 = Producto(122, "Vitamina AD3E Inyectable", "Suplemento", "Suplemento vitamínico para bovinos y equinos", 120000, 30, "10/03/2026")
 producto3 = Producto(123, "Antibiótico Tilmicosina", "Medicamento", "Antibiótico de amplio espectro para ganado", 180000, 15, "05/12/2025")
@@ -14,9 +19,19 @@ producto8 = Producto(128, "Insecticida Pour-on", "Control de plagas", "Solución
 producto9 = Producto(129, "Termómetro Digital Veterinario", "Herramienta", "Instrumento de medición de temperatura animal", 45000, 10, "N/A")
 producto10 = Producto(130, "Sales Mineralizadas 25kg", "Suplemento", "Mezcla mineral para mejorar la nutrición en pastoreo", 70000, 35, "30/08/2026")
 
+# Agregar productos al inventario
+mi_inventario.agregar_producto(producto1)
+mi_inventario.agregar_producto(producto2)
+mi_inventario.agregar_producto(producto3)
+mi_inventario.agregar_producto(producto4)
+mi_inventario.agregar_producto(producto5)
+mi_inventario.agregar_producto(producto6)
+mi_inventario.agregar_producto(producto7)
+mi_inventario.agregar_producto(producto8)
+mi_inventario.agregar_producto(producto9)
+mi_inventario.agregar_producto(producto10)
 
-# Datos de muestra para historiales clínicos
-# Cliente: Productor ganadero - Vaca
+# ====== Datos de muestra para historiales clínicos ======
 historia3 = HistoriaClinica("3", "Pedro Gómez", "Milagros")
 historia3.registrar_diagnostico(
     "Deficiencia de vitaminas",
@@ -24,7 +39,6 @@ historia3.registrar_diagnostico(
     "Aplicar 10 ml intramuscular una vez por semana durante 3 semanas"
 )
 
-# Cliente: Propietario de caballo
 historia4 = HistoriaClinica("4", "Laura Sánchez", "Tornado")
 historia4.registrar_diagnostico(
     "Infestación por parásitos internos",
@@ -32,7 +46,6 @@ historia4.registrar_diagnostico(
     "Administrar 1 ml por cada 50 kg de peso vivo vía subcutánea"
 )
 
-# Cliente: Propietario de perro
 historia5 = HistoriaClinica("5", "Carlos Rivas", "Rocky")
 historia5.registrar_diagnostico(
     "Infección bacteriana de piel",
@@ -40,7 +53,6 @@ historia5.registrar_diagnostico(
     "Administrar 1 ml por cada 30 kg, una vez cada 72 horas durante una semana"
 )
 
-# Cliente: Propietario de gato
 historia6 = HistoriaClinica("6", "María López", "Michi")
 historia6.registrar_diagnostico(
     "Pulgas y garrapatas",
@@ -48,7 +60,6 @@ historia6.registrar_diagnostico(
     "Aplicar cada 3 días durante dos semanas"
 )
 
-# Cliente: Ganadero - Bovino
 historia7 = HistoriaClinica("7", "Luis Ramírez", "Lucero")
 historia7.registrar_diagnostico(
     "Anemia nutricional",
@@ -56,7 +67,6 @@ historia7.registrar_diagnostico(
     "Administrar 100g al día en la ración por 30 días"
 )
 
-# Cliente: Propietario de perro
 historia8 = HistoriaClinica("8", "Ana Torres", "Firulais Jr.")
 historia8.registrar_diagnostico(
     "Garrapatas",
@@ -64,33 +74,37 @@ historia8.registrar_diagnostico(
     "Aplicar sobre el lomo una vez al mes durante la temporada de lluvias"
 )
 
-
+# ====== Menú principal ======
 def main():
-    print("\n¡Bienvenido al Sistema Veterinario!")
-    
+    print("\n ¡Bienvenido al Sistema de Gestión Veterinaria!")
+
     while True:
         print("\n=== MENÚ PRINCIPAL ===")
         print("1. Sistema de Inventario (Productos)")
         print("2. Sistema de Historial Clínico")
         print("3. Menú de Ventas")
         print("0. Salir")
-        
-        opcion = input("Seleccione una opción (1-3): ")
-        
+
+        opcion = input("Seleccione una opción (0-3): ")
+
         if opcion == "1":
-            print("\nAccediendo al sistema de inventario...")
-            producto_main()
+            print("\n Accediendo al sistema de inventario...")
+            menu_inventario(mi_inventario)
+
         elif opcion == "2":
-            print("\nAccediendo al sistema de historial clínico...")
+            print("\n Accediendo al sistema de historial clínico...")
             historial_main()
+
         elif opcion == "3":
-            print("\nAccediendo al menú de ventas...")
+            print("\n Accediendo al menú de ventas...")
             menu_ventas()
+
         elif opcion == "0":
-            print("\n¡Gracias por usar el Sistema Veterinario! Hasta pronto.")
+            print("\n Gracias por usar el Sistema Veterinario. ¡Hasta pronto!")
             break
+
         else:
-            print("\nOpción inválida. Por favor, seleccione una opción válida.")
+            print("Opción inválida. Por favor, seleccione una opción válida.")
 
 if __name__ == "__main__":
     main()
