@@ -25,7 +25,7 @@
         "categoria": "Medicamento",
         "descripcion": "Antibi\u00f3tico de amplio espectro para ganado",
         "precio": 180000,
-        "cantidad": 15,
+        "cantidad": 2,
         "disponibilidad": true,
         "fecha_vencimiento": "05/12/2025"
     },
@@ -95,8 +95,8 @@
         "categoria": "Suplemento",
         "descripcion": "Mezcla mineral para mejorar la nutrici\u00f3n en pastoreo",
         "precio": 70000,
-        "cantidad": 35,
-        "disponibilidad": true,
+        "cantidad": 0,
+        "disponibilidad": false,
         "fecha_vencimiento": "30/08/2026"
     }
 ]

@@ -95,6 +95,8 @@ class Inventario:
         print(f" Productos guardados en {archivo}.")
 
     def cargar_desde_json(self, archivo="productos.json"):
+        # Limpiar lista de productos antes de recargar
+        self.productos.clear()
         try:
             with open(archivo, "r") as f:
                 productos_cargados = json.load(f)

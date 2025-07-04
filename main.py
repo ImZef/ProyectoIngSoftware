@@ -1,67 +1,75 @@
-from HU.Producto import Producto
+#!/usr/bin/env python3
+"""
+Launcher para la aplicación AgroVet Plus
+Este archivo permite ejecutar tanto la interfaz gráfica como la de consola
+"""
+
+import sys
 from HU.Inventario import Inventario
-from HU.HistoriaClinica import HistoriaClinica
-from Proxinterfaz.Menu_principal import MenuPrincipal
+from GUI.main import main as gui_main
+from comandos import main as console_main
 
-# Crear el inventario
-mi_inventario = Inventario()
-mi_inventario.cargar_desde_json()  
+def mostrar_menu_inicial():
+    print("\n" + "="*50)
+    print("🐄🐕 BIENVENIDO A AGROVET PLUS 🐕🐄")
+    print("="*50)
+    print("Sistema de Gestión Agroveterinaria")
+    print("\nSeleccione el tipo de interfaz:")
+    print("1. 🖥️  Interfaz Gráfica (Recomendado)")
+    print("2. 💻 Interfaz de Consola")
+    print("3. ❌ Salir")
+    print("="*50)
 
-# ====== Datos de muestra solo si el inventario está vacío ======
-if not mi_inventario.productos:
-    producto1 = Producto(121, "Ivermectina 1%", "Desparasitante", "Antiparasitario inyectable de amplio espectro", 150000, 20, "19/08/2027")
-    producto2 = Producto(122, "Vitamina AD3E Inyectable", "Suplemento", "Suplemento vitamínico para bovinos y equinos", 120000, 30, "10/03/2026")
-    producto3 = Producto(123, "Antibiótico Tilmicosina", "Medicamento", "Antibiótico de amplio espectro para ganado", 180000, 15, "05/12/2025")
-    producto4 = Producto(124, "Concentrado Purina Bovino 40kg", "Alimento", "Alimento balanceado para engorde de ganado", 180000, 50, "15/02/2026")
-    producto5 = Producto(125, "Vacuna Triple Viral", "Vacuna", "Vacuna canina contra moquillo, hepatitis y parvovirus", 60000, 25, "01/09/2026")
-    producto6 = Producto(126, "Shampoo Antipulgas", "Higiene", "Champú especializado para control de pulgas en mascotas", 35000, 40, "20/05/2027")
-    producto7 = Producto(127, "Desparasitante Fenbendazol 10%", "Desparasitante", "Antiparasitario interno para bovinos", 90000, 18, "07/07/2026")
-    producto8 = Producto(128, "Insecticida Pour-on", "Control de plagas", "Solución tópica para control de moscas y garrapatas", 130000, 22, "11/11/2025")
-    producto9 = Producto(129, "Termómetro Digital Veterinario", "Herramienta", "Instrumento de medición de temperatura animal", 45000, 10, "N/A")
-    producto10 = Producto(130, "Sales Mineralizadas 25kg", "Suplemento", "Mezcla mineral para mejorar la nutrición en pastoreo", 70000, 35, "30/08/2026")
-
-    # Agregar al inventario
-    mi_inventario.agregar_producto(producto1)
-    mi_inventario.agregar_producto(producto2)
-    mi_inventario.agregar_producto(producto3)
-    mi_inventario.agregar_producto(producto4)
-    mi_inventario.agregar_producto(producto5)
-    mi_inventario.agregar_producto(producto6)
-    mi_inventario.agregar_producto(producto7)
-    mi_inventario.agregar_producto(producto8)
-    mi_inventario.agregar_producto(producto9)
-    mi_inventario.agregar_producto(producto10)
-
-    # Guardar después de cargar muestra inicial
-    mi_inventario.guardar_en_json()
-
-# ====== Datos de muestra para historiales clínicos ======
-
-historia3 = HistoriaClinica("3", "Pedro Gómez", "Milagros")
-historia3.registrar_diagnostico("Deficiencia de vitaminas", "Vitamina AD3E Inyectable", "Aplicar 10 ml intramuscular una vez por semana durante 3 semanas")
-
-historia4 = HistoriaClinica("4", "Laura Sánchez", "Tornado")
-historia4.registrar_diagnostico("Infestación por parásitos internos", "Ivermectina 1%", "Administrar 1 ml por cada 50 kg de peso vivo vía subcutánea")
-
-historia5 = HistoriaClinica("5", "Carlos Rivas", "Rocky")
-historia5.registrar_diagnostico("Infección bacteriana de piel", "Antibiótico Tilmicosina", "Administrar 1 ml por cada 30 kg, una vez cada 72 horas durante una semana")
-
-historia6 = HistoriaClinica("6", "María López", "Michi")
-historia6.registrar_diagnostico("Pulgas y garrapatas", "Shampoo Antipulgas", "Aplicar cada 3 días durante dos semanas")
-
-historia7 = HistoriaClinica("7", "Luis Ramírez", "Lucero")
-historia7.registrar_diagnostico("Anemia nutricional", "Sales Mineralizadas 25kg", "Administrar 100g al día en la ración por 30 días")
-
-historia8 = HistoriaClinica("8", "Ana Torres", "Firulais Jr.")
-historia8.registrar_diagnostico("Garrapatas", "Insecticida Pour-on", "Aplicar sobre el lomo una vez al mes durante la temporada de lluvias")
-
-# ==== Iniciar Menú Principal ====
 def main():
-    menu_principal = MenuPrincipal(mi_inventario)
-    menu_principal.mostrar_menu()
-
-    # Guardar el inventario antes de salir
-    mi_inventario.guardar_en_json()
+    while True:
+        mostrar_menu_inicial()
+        
+        try:
+            opcion = input("\n👉 Ingrese su opción (1-3): ").strip()
+            
+            if opcion == "1":
+                print("\n🚀 Iniciando interfaz gráfica...")
+                try:
+                    
+                    gui_main()
+                    break
+                except ImportError as e:
+                    print(f"❌ Error al cargar la interfaz gráfica: {e}")
+                    print("💡 Asegúrese de tener tkinter instalado")
+                    input("Presione Enter para continuar...")
+                except Exception as e:
+                    print(f"❌ Error inesperado: {e}")
+                    input("Presione Enter para continuar...")
+            
+            elif opcion == "2":
+                print("\n💻 Iniciando interfaz de consola...")
+                try:
+                    # Ejecutar la función principal del main.py original
+                    console_main()
+                    break
+                except ImportError:
+                    # Si no existe main() en main.py, ejecutar directamente
+                    import comandos
+                    break
+                except Exception as e:
+                    print(f"❌ Error al cargar la interfaz de consola: {e}")
+                    input("Presione Enter para continuar...")
+            
+            elif opcion == "3":
+                print("\n👋 ¡Gracias por usar AgroVet Plus!")
+                print("🐾 ¡Que tengas un excelente día! 🐾")
+                sys.exit(0)
+            
+            else:
+                print("\n❌ Opción no válida. Por favor ingrese 1, 2 o 3.")
+                input("Presione Enter para continuar...")
+        
+        except KeyboardInterrupt:
+            print("\n\n👋 ¡Hasta pronto!")
+            sys.exit(0)
+        except Exception as e:
+            print(f"\n❌ Error inesperado: {e}")
+            input("Presione Enter para continuar...")
 
 if __name__ == "__main__":
     main()

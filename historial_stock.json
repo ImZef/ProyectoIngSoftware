@@ -14,5 +14,53 @@
         "nuevo_stock": 4,
         "motivo": "venta",
         "fecha": "26/06/2025 13:22:25"
+    },
+    {
+        "codigo_producto": 125,
+        "nombre_producto": "Vacuna Triple Viral",
+        "stock_anterior": 25,
+        "nuevo_stock": 3,
+        "motivo": "ventas",
+        "fecha": "03/07/2025 21:19:52"
+    },
+    {
+        "codigo_producto": 130,
+        "nombre_producto": "Sales Mineralizadas 25kg",
+        "stock_anterior": 35,
+        "nuevo_stock": 2,
+        "motivo": "ventas",
+        "fecha": "03/07/2025 21:25:45"
+    },
+    {
+        "codigo_producto": 130,
+        "nombre_producto": "Sales Mineralizadas 25kg",
+        "stock_anterior": 2,
+        "nuevo_stock": 20,
+        "motivo": "compra",
+        "fecha": "03/07/2025 21:26:23"
+    },
+    {
+        "codigo_producto": 125,
+        "nombre_producto": "Vacuna Triple Viral",
+        "stock_anterior": 3,
+        "nuevo_stock": 25,
+        "motivo": "compras",
+        "fecha": "03/07/2025 21:29:32"
+    },
+    {
+        "codigo_producto": 123,
+        "nombre_producto": "Antibi\u00f3tico Tilmicosina",
+        "stock_anterior": 15,
+        "nuevo_stock": 2,
+        "motivo": "ventas",
+        "fecha": "03/07/2025 21:29:57"
+    },
+    {
+        "codigo_producto": 130,
+        "nombre_producto": "Sales Mineralizadas 25kg",
+        "stock_anterior": 20,
+        "nuevo_stock": 0,
+        "motivo": "ventas",
+        "fecha": "03/07/2025 21:30:43"
     }
 ]
