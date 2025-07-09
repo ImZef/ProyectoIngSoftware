@@ -14,5 +14,21 @@
         "nuevo_stock": 4,
         "motivo": "venta",
         "fecha": "26/06/2025 13:22:25"
+    },
+    {
+        "codigo_producto": 122,
+        "nombre_producto": "Vitamina AD3E Inyectable",
+        "stock_anterior": 4,
+        "nuevo_stock": 15,
+        "motivo": "compra",
+        "fecha": "26/06/2025 13:47:43"
+    },
+    {
+        "codigo_producto": 125,
+        "nombre_producto": "Vacuna Triple Viral",
+        "stock_anterior": 25,
+        "nuevo_stock": 15,
+        "motivo": "venta",
+        "fecha": "26/06/2025 14:16:28"
     }
 ]

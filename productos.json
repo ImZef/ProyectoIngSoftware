@@ -15,7 +15,7 @@
         "categoria": "Suplemento",
         "descripcion": "Suplemento vitam\u00ednico para bovinos y equinos",
         "precio": 120000,
-        "cantidad": 4,
+        "cantidad": 15,
         "disponibilidad": true,
         "fecha_vencimiento": "10/03/2026"
     },
@@ -45,7 +45,7 @@
         "categoria": "Vacuna",
         "descripcion": "Vacuna canina contra moquillo, hepatitis y parvovirus",
         "precio": 60000,
-        "cantidad": 25,
+        "cantidad": 15,
         "disponibilidad": true,
         "fecha_vencimiento": "01/09/2026"
     },
