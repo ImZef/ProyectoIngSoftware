@@ -1,8 +1,9 @@
+import json
 from datetime import datetime
 from HU.Producto import Producto
 
 class Venta:
-    ventas = []  # Lista de ventas realizadas
+    ventas = []
 
     def __init__(self, cliente, productos_vendidos, forma_pago, fecha_venta=None):
         self.cliente = cliente
@@ -20,9 +21,26 @@ class Venta:
     def total(self):
         return sum(prod.get_precio() * cant for prod, cant in self.productos_vendidos)
 
+    def to_dict(self):
+        return {
+            "cliente": self.cliente,
+            "forma_pago": self.forma_pago,
+            "fecha_venta": self.fecha_venta.strftime("%Y-%m-%d %H:%M:%S"),
+            "productos": [
+                {
+                    "codigo": p.get_codigo(),
+                    "nombre": p.get_nombre(),
+                    "cantidad": cantidad,
+                    "precio_unitario": p.get_precio()
+                }
+                for p, cantidad in self.productos_vendidos
+            ]
+        }
+
     def __str__(self):
-        detalle = "\n".join([f"  - {prod.get_nombre()} x{cant} @ {prod.get_precio()}" 
-                             for prod, cant in self.productos_vendidos])
+        detalle = "\n".join(
+            [f"  - {prod.get_nombre()} x{cant} @ {prod.get_precio()}" for prod, cant in self.productos_vendidos]
+        )
         return (
             f"Venta a: {self.cliente}\n"
             f"Fecha: {self.fecha_venta.strftime('%d/%m/%Y %H:%M:%S')}\n"
@@ -31,6 +49,26 @@ class Venta:
             f"Total: ${self.total()}"
         )
 
+    @classmethod
+    def guardar_en_json(cls, archivo="ventas.json"):
+        with open(archivo, "w") as f:
+            json.dump([v.to_dict() for v in cls.ventas], f, indent=4)
+
+    @classmethod
+    def cargar_desde_json(cls, archivo="ventas.json"):
+        try:
+            with open(archivo, "r") as f:
+                data = json.load(f)
+                for v in data:
+                    productos = []
+                    for prod_data in v["productos"]:
+                        producto = next((p for p in Producto.productos if p.get_codigo() == prod_data["codigo"]), None)
+                        if producto:
+                            productos.append((producto, prod_data["cantidad"]))
+                    fecha = datetime.strptime(v["fecha_venta"], "%Y-%m-%d %H:%M:%S")
+                    cls(cliente=v["cliente"], productos_vendidos=productos, forma_pago=v["forma_pago"], fecha_venta=fecha)
+        except FileNotFoundError:
+            pass
     @classmethod
     def registrar_venta(cls):
         print("\n--- Registrar nueva venta ---")
