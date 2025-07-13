@@ -13,8 +13,16 @@ class MenuInventario:
             print("3. Actualizar stock")
             print("4. Ver historial de stock")
             print("5. Crear nuevo producto")
+            print("6. Ver productos próximos a agotarse")
+            print("7. Cambiar umbral de stock bajo")
             print("0. Volver")
-
+            
+            cant, prod = self.inventario.listar_productos_bajos(ptr=False)
+            if cant > 0:
+                print("---------------------------")
+                print(f"⚠️  Hay {cant} productos que requieren atención")
+                print("---------------------------")
+            
             opcion = input("Elige opción: ")
 
             if opcion == "1":
@@ -27,6 +35,11 @@ class MenuInventario:
                 self.inventario.mostrar_historial()
             elif opcion == "5":
                 self.crear_nuevo_producto()
+            elif opcion == "6":
+                self.inventario.listar_productos_bajos()
+            elif opcion == "7":
+                nuevo_umbral = input("Ingrese el nuevo umbral de stock bajo: ")
+                self.inventario.cambiar_umbral_stock_bajo(nuevo_umbral)
             elif opcion == "0":
                 break
             else:

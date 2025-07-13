@@ -6,6 +6,7 @@ from .Producto import Producto
 class Inventario:
     def __init__(self):
         self.productos = []
+        self.umbral_stock_bajo = 5  # Definir el umbral de stock bajo
 
     def agregar_producto(self, producto):
         self.productos.append(producto)
@@ -17,7 +18,32 @@ class Inventario:
             if producto.get_cantidad() < 5:
                 print("⚠️  Producto próximo a agotarse (stock bajo)\n")
 
-
+    def listar_productos_bajos(self, ptr = True):
+        if ptr:
+            print("\n---⚠️ Productos próximos a agotarse (stock bajo) ---")
+        productos_bajos = 0 #variable que rertorna la cantidad de productos con stock bajo
+        prods = []
+        for producto in self.productos:
+            if producto.get_cantidad() < self.umbral_stock_bajo:
+                productos_bajos += 1
+                prods.append(producto.nombre)
+                if ptr:
+                    print(f'Código: {producto.codigo} Producto: {producto.nombre} Cantidad: {producto.cantidad}')
+        if productos_bajos == 0 and ptr:
+            print("No hay productos con stock bajo.")
+        return (productos_bajos, prods)
+    
+    def cambiar_umbral_stock_bajo(self, nuevo_umbral):  # Esta funcion solo puede ser usada por el admnistrador o bodeguero
+        try:
+            nuevo_umbral = int(nuevo_umbral)
+            if nuevo_umbral < 0:
+                print("El umbral no puede ser negativo.")
+                return
+            self.umbral_stock_bajo = nuevo_umbral
+            print(f"Umbral de stock bajo actualizado a {self.umbral_stock_bajo}.")
+        except ValueError:
+            print("Error: El umbral debe ser un número entero.")
+        
     def buscar_por_codigo(self, codigo):
         for p in self.productos:
             if p.get_codigo() == int(codigo):
@@ -114,4 +140,3 @@ class Inventario:
             print(f" Productos cargados desde {archivo}.")
         except FileNotFoundError:
             print(f" Archivo {archivo} no encontrado. Se iniciará inventario vacío.")
-
