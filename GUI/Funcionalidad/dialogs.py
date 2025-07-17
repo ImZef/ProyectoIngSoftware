@@ -4,6 +4,7 @@ Dialog windows for AgroVet Plus application.
 
 import json
 import tkinter as tk
+import tkinter as tk
 from tkinter import messagebox, scrolledtext, ttk
 
 # -------- Intento de importar selector de fecha -------------
@@ -14,7 +15,7 @@ except ImportError:
 
 from HU.HistoriaClinica import HistoriaClinica
 from HU.Producto import Producto
-from ..configuracion import COLOR_PALETTE, ICONS
+from ..configuracion import COLOR_PALETTE, ICONS, FONTS
 
 
 class BaseDialog:
@@ -211,22 +212,34 @@ class UpdateStockWindow(BaseDialog):
         self.create_buttons()
         
     def create_buttons(self):
-        """Crear botones de acción."""
+        """Crear botones de acción usando tk.Button para mostrar colores definidos."""
         buttons_frame = tk.Frame(self.window, bg=self.colors['light_gray'])
-        buttons_frame.pack(fill='x', padx=20, pady=20)
-        
-        tk.Button(buttons_frame, text=f"{ICONS['save']} Actualizar", command=self.update_stock,
-                 bg=self.colors['success'], fg=self.colors['white'], font=('Arial', 11, 'bold'),
-                 relief='flat', padx=20, pady=8).pack(side='left', padx=(0, 10))
-        
-        tk.Button(buttons_frame, text=f"{ICONS['cancel']} Cancelar", command=self.window.destroy,
-                 bg=self.colors['danger'], fg=self.colors['white'], font=('Arial', 11, 'bold'),
-                 relief='flat', padx=20, pady=8).pack(side='left')
+        buttons_frame.pack(fill='x', padx=10, pady=10)
+        # Botón Actualizar destacado en verde con tamaño fijo para mostrar texto
+        btn_update = tk.Button(buttons_frame,
+                               text=f"{ICONS['save']} Actualizar Stock",
+                               command=self.update_stock,
+                               bg=self.colors['success'], fg=self.colors['white'],
+                               font=FONTS['label'], relief='raised', bd=2,
+                               width=15, height=20)
+        btn_update.pack(side='left', padx=(0, 10))
+        # Botón Cancelar destacado en rojo con tamaño fijo
+        btn_cancel = tk.Button(buttons_frame,
+                               text=f"{ICONS['cancel']} Cancelar",
+                               command=self.window.destroy,
+                               bg=self.colors['danger'], fg=self.colors['white'],
+                               font=FONTS['label'], relief='raised', bd=2,
+                               width=15, height=2)
+        btn_cancel.pack(side='left')
     
     def update_stock(self):
         """Actualizar el stock del producto."""
         try:
             nueva_cantidad = int(self.cantidad_entry.get())
+            # No permitir cantidades negativas
+            if nueva_cantidad < 0:
+                messagebox.showerror("Error", "La cantidad no puede ser negativa")
+                return
             motivo = self.motivo_entry.get().strip()
             
             if not motivo:

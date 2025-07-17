@@ -2,5 +2,6 @@
 ROLE_INFO = {
     "id": "2",
     "nombre": "Bodeguero",
-    "permisos": ["inventario", "stock", "productos", "consulta_ventas"],
-} 
+    # Permisos ampliados: ahora incluye gestión de pedidos
+    "permisos": ["inventario", "stock", "productos", "consulta_ventas", "pedidos"],
+}

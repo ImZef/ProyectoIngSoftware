@@ -18,7 +18,7 @@ class Pedido:
         self.producto = producto
         self.cantidad = cantidad
         self.fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
-        self.estado = "Registrado"
+        self.estado = "Solicitado"  # Estado inicial para pedidos de aprovisionamiento
 
     def to_dict(self) -> Dict:
         return {
@@ -31,10 +31,17 @@ class Pedido:
 
 
 class GestorPedidos:
-    def __init__(self):
+    def __init__(self, archivo_pedidos="db/pedidos.json"):
+        # Inicializar inventario
         self.inventario = Inventario()
-        self.inventario.cargar_desde_json()  # carga db/productos.json
+        self.inventario.cargar_desde_json()
+        # Archivo para persistir pedidos
+        from pathlib import Path
+        self.archivo_pedidos = archivo_pedidos
+        Path(self.archivo_pedidos).parent.mkdir(parents=True, exist_ok=True)
+        # Cargar pedidos existentes
         self.pedidos: List[Pedido] = []
+        self._cargar_pedidos()
         # Diccionario rápido {nombre: Producto}
         self.inventario_dict = {p.get_nombre(): p for p in self.inventario.productos}
 
@@ -45,19 +52,72 @@ class GestorPedidos:
         producto = self.inventario_dict[nombre_producto]
         if cantidad <= 0:
             raise ValueError("Cantidad inválida")
-        if not producto.get_disponibilidad():
-            raise ValueError("Producto no disponible")
-        if cantidad > producto.get_cantidad():
-            raise ValueError("Stock insuficiente")
-        # Actualizar stock
-        producto.set_cantidad(producto.get_cantidad() - cantidad)
-        self.inventario.guardar_en_json()  # Persistir cambios de stock
+        # Para pedidos de aprovisionamiento no se descuenta stock al registrar
         pedido = Pedido(cliente, producto, cantidad)
         self.pedidos.append(pedido)
+        # Guardar en disco
+        self._guardar_pedidos()
+        return pedido
+    def procesar_pedido(self, indice: int) -> Pedido:
+        """Marcar pedido como recibido y actualizar stock."""
+        if indice < 0 or indice >= len(self.pedidos):
+            raise IndexError("Pedido no encontrado")
+        pedido = self.pedidos[indice]
+        if pedido.estado != "Solicitado":
+            raise ValueError("El pedido ya fue procesado")
+        # Incrementar stock al recibir mercancía
+        producto = pedido.producto
+        producto.set_cantidad(producto.get_cantidad() + pedido.cantidad)
+        self.inventario.guardar_en_json()
+        pedido.estado = "Recibido"
         return pedido
 
     def listar_pedidos(self) -> List[Pedido]:
         return self.pedidos
+    
+    def procesar_pedido(self, indice: int) -> Pedido:
+        """Marcar un pedido como recibido y actualizar stock."""
+        if indice < 0 or indice >= len(self.pedidos):
+            raise IndexError("Pedido no encontrado")
+        pedido = self.pedidos[indice]
+        if pedido.estado != "Solicitado":
+            raise ValueError("El pedido ya fue procesado")
+        # Incrementar stock al recibir mercancía
+        producto = pedido.producto
+        producto.set_cantidad(producto.get_cantidad() + pedido.cantidad)
+        self.inventario.guardar_en_json()
+        pedido.estado = "Recibido"
+        # Guardar cambios en pedidos
+        self._guardar_pedidos()
+        return pedido
+    
+    # -------- Persistencia de pedidos --------
+    def _guardar_pedidos(self):
+        import json
+        with open(self.archivo_pedidos, "w", encoding="utf-8") as f:
+            json.dump([p.to_dict() for p in self.pedidos], f, indent=4, ensure_ascii=False)
+    
+    def _cargar_pedidos(self):
+        import json
+        from pathlib import Path
+        if not Path(self.archivo_pedidos).exists():
+            return
+        try:
+            with open(self.archivo_pedidos, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for d in data:
+                # Reconstruir pedido
+                nombre_producto = d.get("producto")
+                producto = next((p for p in self.inventario.productos if p.get_nombre() == nombre_producto), None)
+                if not producto:
+                    continue
+                pedido = Pedido(d.get("cliente"), producto, d.get("cantidad"))
+                pedido.fecha = d.get("fecha")
+                pedido.estado = d.get("estado", pedido.estado)
+                self.pedidos.append(pedido)
+        except Exception:
+            # Si falla, iniciar sin pedidos
+            self.pedidos.clear()
 
 
 # ---------------- Interfaz gráfica simple -----------------

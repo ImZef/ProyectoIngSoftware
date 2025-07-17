@@ -15,7 +15,7 @@
         "categoria": "Suplemento",
         "descripcion": "Suplemento vitam\u00ednico para bovinos y equinos",
         "precio": 120000,
-        "cantidad": 6,
+        "cantidad": 16,
         "disponibilidad": true,
         "fecha_vencimiento": "10/03/2026"
     },

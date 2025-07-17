@@ -1,4 +1,7 @@
-from tkinter import Tk, Toplevel, Label, Entry, Button, messagebox
+import tkinter as tk
+from tkinter import Tk, Toplevel, messagebox
+from tkinter import ttk
+from .configuracion import COLOR_PALETTE, FONTS, ICONS, WINDOW_CONFIG
 
 CREDENTIALS = {
     # id_rol: (usuario, contraseña)
@@ -37,18 +40,26 @@ def prompt_login(role_info):
     root.withdraw()  # Ocultar ventana principal
 
     dialog = Toplevel()
+    # Estilizar ventana
+    dialog.configure(bg=COLOR_PALETTE['primary'])
     dialog.title("Inicio de Sesión")
     _center_window(dialog, 350, 220)
     dialog.resizable(False, False)
 
-    Label(dialog, text=f"🔐 Autenticación - {role_info.get('nombre', '')}", font=('Arial', 14, 'bold')).pack(pady=(10, 20))
+    tk.Label(dialog, text=f"🔐 Autenticación - {role_info.get('nombre', '')}",
+             font=FONTS['header'], bg=COLOR_PALETTE['primary'], fg=COLOR_PALETTE['white']
+             ).pack(pady=(10, 20))
 
-    Label(dialog, text="Usuario:").pack(anchor='w', padx=20)
-    username_entry = Entry(dialog)
+    tk.Label(dialog, text="Usuario:", font=FONTS['label'],
+             bg=COLOR_PALETTE['primary'], fg=COLOR_PALETTE['white']
+             ).pack(anchor='w', padx=20)
+    username_entry = tk.Entry(dialog, font=FONTS['text'])
     username_entry.pack(fill='x', padx=20, pady=5)
 
-    Label(dialog, text="Contraseña:").pack(anchor='w', padx=20)
-    password_entry = Entry(dialog, show='*')
+    tk.Label(dialog, text="Contraseña:", font=FONTS['label'],
+             bg=COLOR_PALETTE['primary'], fg=COLOR_PALETTE['white']
+             ).pack(anchor='w', padx=20)
+    password_entry = tk.Entry(dialog, show='*', font=FONTS['text'])
     password_entry.pack(fill='x', padx=20, pady=5)
 
     result = {'success': False}
@@ -66,10 +77,26 @@ def prompt_login(role_info):
     def on_cancel():
         dialog.destroy()
 
-    btn_frame = Button(dialog, text="Ingresar", command=on_accept)
-    btn_frame.pack(pady=10)
+    # Mostrar/ocultar contraseña
+    show_pwd_var = tk.BooleanVar(value=False)
+    def _toggle_password():
+        password_entry.config(show='' if show_pwd_var.get() else '*')
+    tk.Checkbutton(dialog, text="Mostrar contraseña", variable=show_pwd_var,
+                   command=_toggle_password, bg=COLOR_PALETTE['primary'],
+                   fg=COLOR_PALETTE['white'], font=FONTS['label']
+                   ).pack(anchor='w', padx=20, pady=(0,10))
 
-    Button(dialog, text="Cancelar", command=on_cancel).pack()
+    # Botones de acción
+    btn_frame = tk.Frame(dialog, bg=COLOR_PALETTE['primary'])
+    btn_frame.pack(pady=10)
+    tk.Button(btn_frame, text="Ingresar", command=on_accept,
+              bg=COLOR_PALETTE['accent'], fg=COLOR_PALETTE['white'],
+              font=FONTS['label'], width=12, bd=0
+              ).pack(side='left', padx=10)
+    tk.Button(btn_frame, text="Cancelar", command=on_cancel,
+              bg=COLOR_PALETTE['danger'], fg=COLOR_PALETTE['white'],
+              font=FONTS['label'], width=12, bd=0
+              ).pack(side='left', padx=10)
 
     dialog.protocol("WM_DELETE_WINDOW", on_cancel)
     username_entry.focus()

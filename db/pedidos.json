@@ -1,0 +1,16 @@
+[
+    {
+        "cliente": "Distribuciones SA",
+        "producto": "Vitamina AD3E Inyectable",
+        "cantidad": 12,
+        "fecha": "16/07/2025 21:31",
+        "estado": "Recibido"
+    },
+    {
+        "cliente": "Farmacia SA",
+        "producto": "Vitamina AD3E Inyectable",
+        "cantidad": 12,
+        "fecha": "16/07/2025 21:38",
+        "estado": "Solicitado"
+    }
+]

@@ -39,7 +39,7 @@ class PedidosWindow:
         form_frame.pack(fill='x', padx=20, pady=10)
 
         # Campos
-        tk.Label(form_frame, text="Cliente:", font=FONTS['label'], bg=self.colors['white']).grid(row=0, column=0, sticky='e', pady=5)
+        tk.Label(form_frame, text="Proveedor:", font=FONTS['label'], bg=self.colors['white']).grid(row=0, column=0, sticky='e', pady=5)
         self.cliente_entry = tk.Entry(form_frame, width=30)
         self.cliente_entry.grid(row=0, column=1, pady=5, padx=(10,0))
 
@@ -55,26 +55,47 @@ class PedidosWindow:
 
         tk.Button(form_frame, text="Registrar Pedido", bg=self.colors['success'], fg=self.colors['white'], command=self._registrar).grid(row=3, column=0, columnspan=2, pady=10)
 
-        tk.Button(form_frame, text="Procesar a Venta", bg=self.colors['accent'], fg=self.colors['white'], command=self._procesar).grid(row=4, column=0, columnspan=2, pady=5)
+        tk.Button(form_frame, text="Marcar Recibido", bg=self.colors['accent'], fg=self.colors['white'], command=self._procesar).grid(row=4, column=0, columnspan=2, pady=5)
 
         # Tabla pedidos
         table_frame = tk.LabelFrame(self.window, text="📋 Pedidos Registrados", font=FONTS['subtitle'], bg=self.colors['white'], fg=self.colors['dark_gray'])
         table_frame.pack(fill='both', expand=True, padx=20, pady=10)
-        columns = ("Cliente", "Producto", "Cantidad", "Fecha", "Estado")
+        columns = ("Proveedor", "Producto", "Cantidad", "Fecha", "Estado")
         self.tree = ttk.Treeview(table_frame, columns=columns, show='headings')
         for col in columns:
             self.tree.heading(col, text=col)
             self.tree.column(col, anchor='center')
         self.tree.pack(fill='both', expand=True)
+        # Configure row tags for status coloring
+        self.tree.tag_configure('Solicitado', background=self.colors['white'])
+        self.tree.tag_configure('Recibido', background=self.colors['success'])
         self._refresh_table()
 
     # ------------- Acciones -------------
     def _registrar(self):
+        # Restaurar estilos de fondo
+        self.cliente_entry.config(bg='white')
+        self.cantidad_entry.config(bg='white')
+        self.producto_combo.config(bg='white')
+
         cliente = self.cliente_entry.get().strip()
-        prod = self.producto_var.get()
+        prod = self.producto_var.get().strip()
         cant_str = self.cantidad_entry.get().strip()
-        if not cliente or not prod or not cant_str:
-            messagebox.showerror("Campo obligatorio", "Por favor complete todos los campos.")
+        # Validar campos obligatorios
+        missing = []
+        if not cliente:
+            missing.append(self.cliente_entry)
+        if not prod:
+            missing.append(self.producto_combo)
+        if not cant_str:
+            missing.append(self.cantidad_entry)
+        if missing:
+            for widget in missing:
+                try:
+                    widget.config(bg='salmon')
+                except:
+                    pass
+            messagebox.showerror("Campos obligatorios", "Complete todos los campos resaltados.")
             return
         if not cant_str.isdigit():
             messagebox.showerror("Error", "La cantidad debe ser numérica")
@@ -82,10 +103,14 @@ class PedidosWindow:
         cantidad = int(cant_str)
         try:
             pedido = self.gestor.registrar_pedido(cliente, prod, cantidad)
-            messagebox.showinfo("Éxito", f"Pedido registrado para {cliente}")
+            messagebox.showinfo("Éxito", f"Pedido registrado exitosamente para {cliente}")
+            # Actualizar inventario y combo de productos
+            self.gestor.inventario_dict = {p.get_nombre(): p for p in self.gestor.inventario.productos}
+            self.producto_combo['values'] = list(self.gestor.inventario_dict.keys())
+            # Refrescar tabla y limpiar formulario
             self._refresh_table()
-            self.cantidad_entry.delete(0, tk.END)
             self.cliente_entry.delete(0, tk.END)
+            self.cantidad_entry.delete(0, tk.END)
             self.producto_var.set("")
         except ValueError as e:
             messagebox.showerror("Error", str(e))
@@ -93,21 +118,23 @@ class PedidosWindow:
     def _refresh_table(self):
         for i in self.tree.get_children():
             self.tree.delete(i)
-        for p in self.gestor.listar_pedidos():
+        for idx, p in enumerate(self.gestor.listar_pedidos()):
             d = p.to_dict()
-            self.tree.insert('', 'end', values=(d['cliente'], d['producto'], d['cantidad'], d['fecha'], d['estado'])) 
+            # Apply tag based on estado for coloring
+            tag = d['estado']
+            self.tree.insert('', 'end', iid=str(idx), values=(d['cliente'], d['producto'], d['cantidad'], d['fecha'], d['estado']), tags=(tag,))
 
     def _procesar(self):
         sel = self.tree.selection()
         if not sel:
-            messagebox.showinfo("Seleccionar", "Seleccione un pedido para procesar")
+            messagebox.showinfo("Seleccionar", "Seleccione un pedido para procesar.")
             return
         idx = int(sel[0])
         try:
             pedido = self.gestor.procesar_pedido(idx)
-            messagebox.showinfo("Procesado", f"Pedido de {pedido.cliente} marcado como vendido")
+            messagebox.showinfo("Procesado", f"Pedido de {pedido.cliente} ahora está {pedido.estado}.")
             self._refresh_table()
-        except Exception as e:
+        except (IndexError, ValueError) as e:
             messagebox.showerror("Error", str(e))
 
 
@@ -142,7 +169,7 @@ class PedidosComponent:
         form_frame = tk.LabelFrame(root, text="🛒 Nuevo Pedido", font=FONTS['subtitle'], bg=self.colors['white'], fg=self.colors['dark_gray'], padx=20, pady=15)
         form_frame.pack(fill='x', padx=20, pady=10)
 
-        tk.Label(form_frame, text="Cliente:", font=FONTS['label'], bg=self.colors['white']).grid(row=0, column=0, sticky='e', pady=5)
+        tk.Label(form_frame, text="Proveedor:", font=FONTS['label'], bg=self.colors['white']).grid(row=0, column=0, sticky='e', pady=5)
         self.cliente_entry = tk.Entry(form_frame, width=30)
         self.cliente_entry.grid(row=0, column=1, pady=5, padx=(10,0))
 
@@ -158,17 +185,20 @@ class PedidosComponent:
 
         tk.Button(form_frame, text="Registrar Pedido", bg=self.colors['success'], fg=self.colors['white'], command=self._registrar).grid(row=3, column=0, columnspan=2, pady=10)
 
-        tk.Button(form_frame, text="Procesar a Venta", bg=self.colors['accent'], fg=self.colors['white'], command=self._procesar).grid(row=4, column=0, columnspan=2, pady=5)
+        tk.Button(form_frame, text="Marcar Recibido", bg=self.colors['accent'], fg=self.colors['white'], command=self._procesar).grid(row=4, column=0, columnspan=2, pady=5)
 
         # Tabla de pedidos
         table_frame = tk.LabelFrame(root, text="📋 Pedidos Registrados", font=FONTS['subtitle'], bg=self.colors['white'], fg=self.colors['dark_gray'])
         table_frame.pack(fill='both', expand=True, padx=20, pady=10)
-        columns = ("Cliente", "Producto", "Cantidad", "Fecha", "Estado")
+        columns = ("Proveedor", "Producto", "Cantidad", "Fecha", "Estado")
         self.tree = ttk.Treeview(table_frame, columns=columns, show='headings')
         for col in columns:
             self.tree.heading(col, text=col)
             self.tree.column(col, anchor='center')
         self.tree.pack(fill='both', expand=True)
+        # Configure row tags for status coloring
+        self.tree.tag_configure('Solicitado', background=self.colors['white'])
+        self.tree.tag_configure('Recibido', background=self.colors['success'])
         self._refresh_table()
 
     def _registrar(self):
@@ -183,10 +213,14 @@ class PedidosComponent:
             return
         cantidad = int(cant_str)
         try:
-            self.gestor.registrar_pedido(cliente, prod, cantidad)
+            pedido = self.gestor.registrar_pedido(cliente, prod, cantidad)
             messagebox.showinfo("Éxito", f"Pedido registrado para {cliente}")
+            # Actualizar inventario interno y combo
+            self.gestor.inventario_dict = {p.get_nombre(): p for p in self.gestor.inventario.productos}
+            self.producto_combo['values'] = list(self.gestor.inventario_dict.keys())
+            # Refrescar tabla
             self._refresh_table()
-            # limpiar
+            # Limpiar formulario
             self.cliente_entry.delete(0, tk.END)
             self.cantidad_entry.delete(0, tk.END)
             self.producto_var.set("")
@@ -198,17 +232,19 @@ class PedidosComponent:
             self.tree.delete(i)
         for idx, p in enumerate(self.gestor.listar_pedidos()):
             d = p.to_dict()
-            self.tree.insert('', 'end', iid=str(idx), values=(d['cliente'], d['producto'], d['cantidad'], d['fecha'], d['estado']))
+            # Apply tag based on estado for coloring
+            tag = d['estado']
+            self.tree.insert('', 'end', iid=str(idx), values=(d['cliente'], d['producto'], d['cantidad'], d['fecha'], d['estado']), tags=(tag,))
 
     def _procesar(self):
         sel = self.tree.selection()
         if not sel:
-            messagebox.showinfo("Seleccionar", "Seleccione un pedido para procesar")
+            messagebox.showinfo("Seleccionar", "Seleccione un pedido para procesar.")
             return
         idx = int(sel[0])
         try:
             pedido = self.gestor.procesar_pedido(idx)
-            messagebox.showinfo("Procesado", f"Pedido de {pedido.cliente} marcado como vendido")
+            messagebox.showinfo("Procesado", f"Pedido de {pedido.cliente} ahora está {pedido.estado}.")
             self._refresh_table()
-        except Exception as e:
-            messagebox.showerror("Error", str(e)) 
+        except (IndexError, ValueError) as e:
+            messagebox.showerror("Error", str(e))

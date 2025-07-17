@@ -13,6 +13,10 @@ from .Funcionalidad.dashboard import DashboardComponent
 from .Funcionalidad.Inventario import InventoryComponent
 from .Funcionalidad.ventas import SalesComponent
 from .roles import role_manager
+from HU.GestorUsuarios import GestorUsuarios
+import os
+# Sólo PNG soportado nativamente por tk.PhotoImage
+PIL_AVAILABLE = False
 
 
 class AgrovetApplication:
@@ -45,6 +49,8 @@ class AgrovetApplication:
         self.inventory_component.refresh_callback = self.on_inventory_change
         from .Funcionalidad.pedidos import PedidosComponent
         self.orders_component = PedidosComponent(self.root)
+        # Gestor de usuarios para administración
+        self.user_manager = GestorUsuarios()
         
         # Configurar estilos y crear interfaz
         self.setup_styles()
@@ -128,10 +134,30 @@ class AgrovetApplication:
         title_frame = tk.Frame(header_frame, bg=self.colors['primary'])
         title_frame.pack(expand=True)
         
-        # Icono
-        icon_label = tk.Label(title_frame, text=ICONS['vet'], font=('Arial', 32), 
-                             bg=self.colors['primary'], fg=self.colors['accent'])
-        icon_label.pack(side='left', padx=(0, 20))
+        # Logo de Agroveterinaria Los Caballos
+        # Buscar logo en varias ubicaciones (.png únicamente)
+        search_paths = [
+            os.path.join(os.path.dirname(__file__), 'logo.png'),
+            os.path.join(os.path.dirname(__file__), '..', 'logo.png')
+        ]
+        logo_loaded = False
+        for lp in search_paths:
+            lp = os.path.abspath(lp)
+            if os.path.exists(lp):
+                try:
+                    self.logo_img = tk.PhotoImage(file=lp)
+                    logo_label = tk.Label(title_frame, image=self.logo_img, bg=self.colors['primary'])
+                    logo_label.pack(side='left', padx=(0, 20))
+                    logo_loaded = True
+                    break
+                except Exception as e:
+                    print(f"[Error] al cargar logo.png desde {lp}: {e}")
+        if not logo_loaded:
+            # No se encontró logo.png; mostrar ícono de texto
+            print(f"[Aviso] logo.png no encontrado en: {search_paths}")
+            icon_label = tk.Label(title_frame, text=ICONS['vet'], font=('Arial', 32),
+                                 bg=self.colors['primary'], fg=self.colors['accent'])
+            icon_label.pack(side='left', padx=(0, 20))
         
         # Título principal
         title_label = tk.Label(title_frame, text="Agroveterinaria Los Caballos", 
@@ -207,75 +233,9 @@ class AgrovetApplication:
             
         if accessible_tabs['user_management']:
             self.create_user_management_tab()
-
-        if accessible_tabs['orders']:
+        # Pestaña de Pedidos para roles con permiso 'pedidos'
+        if accessible_tabs.get('orders'):
             self.orders_component.create_pedidos_tab(self.notebook)
-
-    def create_appointments_tab(self):
-        """Crear pestaña para agendar citas."""
-        appointments_frame = ttk.Frame(self.notebook)
-        self.notebook.add(appointments_frame, text=f"{ICONS.get('appointments', '📅')} Citas")
-
-        # Contenido principal
-        main_frame = tk.Frame(appointments_frame, bg=self.colors['light_gray'])
-        main_frame.pack(fill='both', expand=True, padx=20, pady=20)
-
-        # Título
-        title_label = tk.Label(main_frame,
-                               text="📅 Gestión de Citas",
-                               font=FONTS['title'],
-                               bg=self.colors['light_gray'],
-                               fg=self.colors['dark_gray'])
-        title_label.pack(pady=(0, 20))
-
-        # Placeholder de funcionalidad
-        content_frame = tk.Frame(main_frame, bg=self.colors['white'], relief='raised', bd=2)
-        content_frame.pack(fill='both', expand=True, padx=10, pady=10)
-
-        info_label = tk.Label(content_frame,
-                              text="📅 Aquí podrá registrar y consultar citas\n\n⚠️ Funcionalidad en desarrollo",
-                              font=FONTS['text'],
-                              bg=self.colors['white'],
-                              fg=self.colors['dark_gray'],
-                              justify='left')
-        info_label.pack(expand=True, pady=50)
-
-    def create_user_management_tab(self):
-        """Crear pestaña de gestión de usuarios (solo Administrador)."""
-        users_frame = ttk.Frame(self.notebook)
-        self.notebook.add(users_frame, text=f"{ICONS.get('users', '👥')} Usuarios")
-
-        main_frame = tk.Frame(users_frame, bg=self.colors['light_gray'])
-        main_frame.pack(fill='both', expand=True, padx=20, pady=20)
-
-        title_label = tk.Label(main_frame,
-                              text="👥 Gestión de Usuarios",
-                              font=FONTS['title'],
-                              bg=self.colors['light_gray'],
-                              fg=self.colors['dark_gray'])
-        title_label.pack(pady=(0, 20))
-
-        content_frame = tk.Frame(main_frame, bg=self.colors['white'], relief='raised', bd=2)
-        content_frame.pack(fill='both', expand=True, padx=10, pady=10)
-
-        info_label = tk.Label(content_frame,
-                              text="🔑 Alta, baja y modificación de cuentas\n\n⚠️ Funcionalidad en desarrollo",
-                              font=FONTS['text'],
-                              bg=self.colors['white'],
-                              fg=self.colors['dark_gray'],
-                              justify='left')
-        info_label.pack(expand=True, pady=50)
-
-    def create_all_tabs(self):
-        """Crear todas las pestañas (modo sin restricciones)."""
-        self.dashboard_component.create_dashboard_tab(self.notebook)
-        self.inventory_component.create_inventory_tab(self.notebook)
-        # self.create_products_tab()  # Eliminada
-        # self.create_appointments_tab()  # Eliminada
-        self.clinical_component.create_clinical_history_tab(self.notebook)
-        self.sales_component.create_sales_tab(self.notebook)
-        self.create_user_management_tab()
-        self.orders_component.create_pedidos_tab(self.notebook)
 
     def create_products_tab(self):
         """Crear pestaña de productos."""
@@ -416,6 +376,137 @@ class AgrovetApplication:
         # Linux
         widget.bind_all("<Button-4>", lambda e: widget.yview_scroll(-1, "units"))
         widget.bind_all("<Button-5>", lambda e: widget.yview_scroll(1, "units"))
+
+
+    def create_user_management_tab(self):
+        # Pestaña de Gestión de Usuarios para administradores
+        users_frame = ttk.Frame(self.notebook)
+        self.notebook.add(users_frame, text=f"{ICONS.get('users','👥')} Usuarios")
+        main_frame = tk.Frame(users_frame, bg=self.colors['light_gray'])
+        main_frame.pack(fill='both', expand=True, padx=20, pady=20)
+        # Título
+        title_label = tk.Label(main_frame, text="👥 Gestión de Usuarios", font=FONTS['title'],
+                              bg=self.colors['light_gray'], fg=self.colors['dark_gray'])
+        title_label.pack(pady=(0, 20))
+        # Contenedor principal
+        content_frame = tk.Frame(main_frame, bg=self.colors['white'], relief='raised', bd=2)
+        content_frame.pack(fill='both', expand=True, padx=10, pady=10)
+        # Formulario para agregar nuevo usuario
+        form_frame = tk.LabelFrame(content_frame, text="➕ Nuevo Usuario", font=FONTS['subtitle'],
+                                  bg=self.colors['white'], fg=self.colors['dark_gray'], padx=10, pady=10)
+        form_frame.pack(fill='x', padx=10, pady=10)
+        tk.Label(form_frame, text="Username:", font=FONTS['label'], bg=self.colors['white']).grid(row=0, column=0, pady=5, sticky='e')
+        self.username_entry = tk.Entry(form_frame, width=30)
+        self.username_entry.grid(row=0, column=1, pady=5, padx=5)
+        tk.Label(form_frame, text="Nombre:", font=FONTS['label'], bg=self.colors['white']).grid(row=1, column=0, pady=5, sticky='e')
+        self.name_entry = tk.Entry(form_frame, width=30)
+        self.name_entry.grid(row=1, column=1, pady=5, padx=5)
+        tk.Label(form_frame, text="Rol:", font=FONTS['label'], bg=self.colors['white']).grid(row=2, column=0, pady=5, sticky='e')
+        roles = role_manager.get_available_roles()
+        role_options = [f"{rid}: {info['nombre']}" for rid, info in roles.items()]
+        self.new_role_var = tk.StringVar()
+        self.new_role_combo = ttk.Combobox(form_frame, textvariable=self.new_role_var, values=role_options,
+                                           state='readonly', width=28)
+        self.new_role_combo.grid(row=2, column=1, pady=5, padx=5)
+        tk.Button(form_frame, text="Agregar Usuario", bg=self.colors['success'], fg=self.colors['white'],
+                  command=self._add_user).grid(row=3, column=0, columnspan=2, pady=10)
+        # Tabla de usuarios existentes
+        table_frame = tk.LabelFrame(content_frame, text="📋 Usuarios Existentes", font=FONTS['subtitle'],
+                                    bg=self.colors['white'], fg=self.colors['dark_gray'], padx=10, pady=10)
+        table_frame.pack(fill='both', expand=True, padx=10, pady=10)
+        cols = ('Username', 'Nombre', 'Rol')
+        self.users_tree = ttk.Treeview(table_frame, columns=cols, show='headings')
+        for c in cols:
+            self.users_tree.heading(c, text=c)
+            self.users_tree.column(c, anchor='center')
+        self.users_tree.pack(fill='both', expand=True)
+        # Controles para cambio de rol
+        control_frame = tk.Frame(content_frame, bg=self.colors['white'])
+        control_frame.pack(fill='x', padx=10, pady=(0,10))
+        tk.Label(control_frame, text="Nuevo Rol:", font=FONTS['label'], bg=self.colors['white']).pack(side='left')
+        self.update_role_var = tk.StringVar()
+        self.update_role_combo = ttk.Combobox(control_frame, textvariable=self.update_role_var,
+                                             values=role_options, state='readonly', width=25)
+        self.update_role_combo.pack(side='left', padx=5)
+        tk.Button(control_frame, text="Actualizar Rol", bg=self.colors['accent'], fg=self.colors['white'],
+                  command=self._update_user_role).pack(side='left', padx=5)
+        # Inicializar lista
+        self._refresh_users_table()
+
+    def _add_user(self):
+        """Agregar un nuevo usuario con los datos del formulario."""
+        username = self.username_entry.get().strip()
+        nombre = self.name_entry.get().strip()
+        rol_seleccionado = self.new_role_var.get()
+
+        if not username or not nombre or not rol_seleccionado:
+            messagebox.showwarning("Advertencia", "Todos los campos son obligatorios.")
+            return
+
+        try:
+            # Obtener ID de rol seleccionado
+            rol_id = rol_seleccionado.split(':')[0]
+
+            # Crear nuevo usuario
+            self.user_manager.agregar_usuario(username, nombre, rol_id)
+
+            # Limpiar formulario
+            self.username_entry.delete(0, tk.END)
+            self.name_entry.delete(0, tk.END)
+            self.new_role_var.set('')
+
+            # Actualizar tabla de usuarios
+            self._refresh_users_table()
+
+            messagebox.showinfo("Éxito", "Usuario agregado exitosamente.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo agregar el usuario: {e}")
+
+    def _refresh_users_table(self):
+        """Actualizar la tabla de usuarios existentes."""
+        try:
+            # Limpiar tabla
+            for item in self.users_tree.get_children():
+                self.users_tree.delete(item)
+
+            # Obtener usuarios desde el gestor
+            usuarios = self.user_manager.listar_usuarios()
+            # Insertar en la tabla (lista de objetos Usuario)
+            for user in usuarios:
+                self.users_tree.insert('', 'end', values=(user.username, user.nombre, user.rol_id))
+
+            # Ajustar ancho de columnas
+            for col in self.users_tree['columns']:
+                self.users_tree.column(col, width=max(100, self.users_tree.column(col, 'width')))
+        except Exception as e:
+            print(f"Error al refrescar tabla de usuarios: {e}")
+
+    def _update_user_role(self):
+        """Actualizar el rol del usuario seleccionado en la tabla."""
+        try:
+            # Obtener usuario seleccionado
+            selected_item = self.users_tree.selection()
+            if not selected_item:
+                messagebox.showwarning("Advertencia", "Seleccione un usuario de la tabla.")
+                return
+
+            # Obtener nuevo rol
+            nuevo_rol_seleccionado = self.update_role_var.get()
+            if not nuevo_rol_seleccionado:
+                messagebox.showwarning("Advertencia", "Seleccione un nuevo rol.")
+                return
+
+            nuevo_rol_id = nuevo_rol_seleccionado.split(':')[0]
+
+            # Actualizar rol del usuario
+            for item in selected_item:
+                username = self.users_tree.item(item, 'values')[0]
+                self.user_manager.actualizar_rol(username, nuevo_rol_id)
+
+            messagebox.showinfo("Éxito", "Rol de usuario actualizado exitosamente.")
+            self._refresh_users_table()  # Refrescar tabla
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo actualizar el rol del usuario: {e}")
 
 
 def main(rol_usuario=None):
