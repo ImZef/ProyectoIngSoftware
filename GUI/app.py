@@ -402,6 +402,7 @@ class AgrovetApplication:
         self.name_entry = tk.Entry(form_frame, width=30)
         self.name_entry.grid(row=1, column=1, pady=5, padx=5)
         tk.Label(form_frame, text="Rol:", font=FONTS['label'], bg=self.colors['white']).grid(row=2, column=0, pady=5, sticky='e')
+        # Obtener roles y preparar lista de nombres para mostrar
         roles = role_manager.get_available_roles()
         # Orden descendente: primero IDs numéricos, luego alfanuméricos
         numeric = [(rid, info) for rid, info in roles.items() if rid.isdigit()]
@@ -409,10 +410,12 @@ class AgrovetApplication:
         numeric_sorted = sorted(numeric, key=lambda kv: int(kv[0]), reverse=True)
         alpha_sorted = sorted(alpha, key=lambda kv: kv[0], reverse=True)
         sorted_roles = numeric_sorted + alpha_sorted
-        role_options = [f"{rid}: {info['nombre']}" for rid, info in sorted_roles]
+        # Mapear nombre de rol a su ID
+        self.role_name_to_id = {info['nombre']: rid for rid, info in sorted_roles}
+        role_names = list(self.role_name_to_id.keys())
         self.new_role_var = tk.StringVar()
-        self.new_role_combo = ttk.Combobox(form_frame, textvariable=self.new_role_var, values=role_options,
-                                           state='readonly', width=28)
+        self.new_role_combo = ttk.Combobox(form_frame, textvariable=self.new_role_var,
+                                           values=role_names, state='readonly', width=28)
         self.new_role_combo.grid(row=2, column=1, pady=5, padx=5)
         tk.Button(form_frame, text="Agregar Usuario", bg=self.colors['success'], fg=self.colors['white'],
                   command=self._add_user).grid(row=3, column=0, columnspan=2, pady=10)
@@ -433,8 +436,9 @@ class AgrovetApplication:
         # Cambiar rol
         tk.Label(action_frame, text="Nuevo Rol:", font=FONTS['label'], bg=self.colors['white']).pack(side='left')
         self.update_role_var = tk.StringVar()
+        # Usar misma lista de nombres de rol
         self.update_role_combo = ttk.Combobox(action_frame, textvariable=self.update_role_var,
-                                             values=role_options, state='readonly', width=25)
+                                             values=list(self.role_name_to_id.keys()), state='readonly', width=25)
         self.update_role_combo.pack(side='left', padx=5)
         tk.Button(action_frame, text="Actualizar Rol", bg=self.colors['accent'], fg=self.colors['white'],
                   command=self._update_user_role).pack(side='left', padx=5)
@@ -458,8 +462,8 @@ class AgrovetApplication:
             return
 
         try:
-            # Obtener ID de rol seleccionado
-            rol_id = rol_seleccionado.split(':')[0]
+            # Obtener ID de rol seleccionado usando mapping de nombres
+            rol_id = self.role_name_to_id.get(rol_seleccionado)
 
             # Crear nuevo usuario
             self.user_manager.agregar_usuario(username, nombre, rol_id)
@@ -483,11 +487,14 @@ class AgrovetApplication:
             for item in self.users_tree.get_children():
                 self.users_tree.delete(item)
 
-            # Obtener usuarios desde el gestor
+            # Obtener usuarios y roles para mostrar nombres
             usuarios = self.user_manager.listar_usuarios()
+            roles = role_manager.get_available_roles()
             # Insertar en la tabla (lista de objetos Usuario)
             for user in usuarios:
-                self.users_tree.insert('', 'end', values=(user.username, user.nombre, user.rol_id))
+                # Mostrar nombre de rol en lugar de ID
+                role_name = roles.get(user.rol_id, {}).get('nombre', user.rol_id)
+                self.users_tree.insert('', 'end', values=(user.username, user.nombre, role_name))
 
             # Ajustar ancho de columnas
             for col in self.users_tree['columns']:
@@ -510,7 +517,8 @@ class AgrovetApplication:
                 messagebox.showwarning("Advertencia", "Seleccione un nuevo rol.")
                 return
 
-            nuevo_rol_id = nuevo_rol_seleccionado.split(':')[0]
+            # Obtener ID de rol seleccionado usando mapping de nombres
+            nuevo_rol_id = self.role_name_to_id.get(nuevo_rol_seleccionado)
 
             # Actualizar rol del usuario
             for item in selected_item:

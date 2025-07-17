@@ -26,19 +26,6 @@
         ]
     },
     {
-        "cliente": "Jose",
-        "forma_pago": "efectivo",
-        "fecha_venta": "2025-07-16 18:12:03",
-        "productos": [
-            {
-                "codigo": 122,
-                "nombre": "Vitamina AD3E Inyectable",
-                "cantidad": 1,
-                "precio_unitario": 120000
-            }
-        ]
-    },
-    {
         "cliente": "Lara",
         "forma_pago": "efectivo",
         "fecha_venta": "2025-07-17 00:59:53",
@@ -48,6 +35,19 @@
                 "nombre": "Ivermectina 1%",
                 "cantidad": 1,
                 "precio_unitario": 150000
+            }
+        ]
+    },
+    {
+        "cliente": "carlos",
+        "forma_pago": "efectivo",
+        "fecha_venta": "2025-07-17 14:39:43",
+        "productos": [
+            {
+                "codigo": 122,
+                "nombre": "Vitamina AD3E Inyectable",
+                "cantidad": 1,
+                "precio_unitario": 120000
             }
         ]
     }

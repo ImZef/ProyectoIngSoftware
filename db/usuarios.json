@@ -8,5 +8,10 @@
         "username": "carlos",
         "nombre": "carlos",
         "rol_id": "2"
+    },
+    {
+        "username": "medico_veter",
+        "nombre": "jose",
+        "rol_id": "veterinario"
     }
 ]

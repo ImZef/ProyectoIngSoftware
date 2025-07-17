@@ -5,7 +5,7 @@
         "categoria": "Desparasitante",
         "descripcion": "Antiparasitario inyectable de amplio espectro",
         "precio": 150000,
-        "cantidad": 19,
+        "cantidad": 17,
         "disponibilidad": true,
         "fecha_vencimiento": "19/08/2027"
     },
@@ -15,7 +15,7 @@
         "categoria": "Suplemento",
         "descripcion": "Suplemento vitam\u00ednico para bovinos y equinos",
         "precio": 120000,
-        "cantidad": 28,
+        "cantidad": 27,
         "disponibilidad": true,
         "fecha_vencimiento": "10/03/2026"
     },
@@ -25,7 +25,7 @@
         "categoria": "Medicamento",
         "descripcion": "Antibi\u00f3tico de amplio espectro para ganado",
         "precio": 180000,
-        "cantidad": 15,
+        "cantidad": 60,
         "disponibilidad": true,
         "fecha_vencimiento": "05/12/2025"
     },
@@ -104,7 +104,7 @@
         "nombre": "Purina",
         "categoria": "Alimento",
         "descripcion": "Alimento para perro",
-        "precio": 30.0,
+        "precio": 30000,
         "cantidad": 20,
         "disponibilidad": true,
         "fecha_vencimiento": "07/07/2026"

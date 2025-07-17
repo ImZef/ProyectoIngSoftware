@@ -190,5 +190,21 @@
         "nuevo_stock": 19,
         "motivo": "ventas",
         "fecha": "17/07/2025 00:59:53"
+    },
+    {
+        "codigo_producto": 121,
+        "nombre_producto": "Ivermectina 1%",
+        "stock_anterior": 19,
+        "nuevo_stock": 18,
+        "motivo": "ventas",
+        "fecha": "17/07/2025 14:38:06"
+    },
+    {
+        "codigo_producto": 122,
+        "nombre_producto": "Vitamina AD3E Inyectable",
+        "stock_anterior": 28,
+        "nuevo_stock": 27,
+        "motivo": "ventas",
+        "fecha": "17/07/2025 14:39:43"
     }
 ]

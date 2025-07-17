@@ -12,5 +12,26 @@
         "cantidad": 12,
         "fecha": "16/07/2025 21:38",
         "estado": "Recibido"
+    },
+    {
+        "cliente": "Fabricas SAS",
+        "producto": "Shampoo Antipulgas",
+        "cantidad": 1,
+        "fecha": "17/07/2025 12:21",
+        "estado": "Solicitado"
+    },
+    {
+        "cliente": "javier",
+        "producto": "Antibiótico Tilmicosina",
+        "cantidad": 45,
+        "fecha": "17/07/2025 14:15",
+        "estado": "Recibido"
+    },
+    {
+        "cliente": "jose",
+        "producto": "Insecticida Pour-on",
+        "cantidad": 20,
+        "fecha": "17/07/2025 14:16",
+        "estado": "Solicitado"
     }
 ]

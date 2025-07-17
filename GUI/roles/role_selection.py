@@ -63,18 +63,9 @@ class RoleSelectionWindow:
         tk.Label(main_frame, text="Seleccione su rol en el sistema:", font=FONTS['subtitle'],
                  bg=self.colors['primary'], fg=self.colors['secondary']).pack(pady=(0,20))
 
-        # Interfaz
-        tk.Label(main_frame, text="Seleccione el tipo de interfaz:", font=FONTS['subtitle'],
-                 bg=self.colors['primary'], fg=self.colors['secondary']).pack(pady=(0,5))
-        interface_frame = tk.Frame(main_frame, bg=self.colors['primary'])
-        interface_frame.pack(pady=(0,20))
-        self.interface_var = tk.StringVar(value='gui')
-        tk.Radiobutton(interface_frame, text="🖥️ Gráfica (Tkinter)", variable=self.interface_var,
-                       value='gui', font=FONTS['label'], bg=self.colors['primary'], fg=self.colors['white'],
-                       selectcolor=self.colors['accent'], activebackground=self.colors['primary']).pack(side='left', padx=10)
-        tk.Radiobutton(interface_frame, text="💻 Consola", variable=self.interface_var,
-                       value='console', font=FONTS['label'], bg=self.colors['primary'], fg=self.colors['white'],
-                       selectcolor=self.colors['accent'], activebackground=self.colors['primary']).pack(side='left', padx=10)
+        # Interfaz fija en Tkinter
+        tk.Label(main_frame, text="Interfaz diseñada en Tkinter", font=FONTS['subtitle'],
+                 bg=self.colors['primary'], fg=self.colors['secondary']).pack(pady=(0,20))
 
         # Roles scrollable
         roles_container = tk.Frame(main_frame, bg=self.colors['primary'])
@@ -175,7 +166,8 @@ class RoleSelectionWindow:
 
     def confirm_selection(self):
         """Validar credenciales y cerrar si correctas."""
-        self.selected_interface = self.interface_var.get()
+        # Interfaz fija en Tkinter
+        self.selected_interface = 'gui'
         role_id = str(self.selected_role.get('id')) if self.selected_role else None
         expected = CREDENTIALS.get(role_id)
         if expected:
