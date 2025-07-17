@@ -3,7 +3,7 @@ Main application class for AgroVet Plus GUI.
 """
 
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, simpledialog
 
 from HU.HistoriaClinica import HistoriaClinica
 from HU.Inventario import Inventario
@@ -426,20 +426,23 @@ class AgrovetApplication:
             self.users_tree.heading(c, text=c)
             self.users_tree.column(c, anchor='center')
         self.users_tree.pack(fill='both', expand=True)
-        # Controles para cambio de rol
-        control_frame = tk.Frame(content_frame, bg=self.colors['white'])
-        control_frame.pack(fill='x', padx=10, pady=(0,10))
-        tk.Label(control_frame, text="Nuevo Rol:", font=FONTS['label'], bg=self.colors['white']).pack(side='left')
+        # Acciones de usuario (rol, editar, eliminar)
+        action_frame = tk.LabelFrame(content_frame, text="📌 Acciones Usuario", font=FONTS['subtitle'],
+                                     bg=self.colors['light_gray'], fg=self.colors['dark_gray'], padx=10, pady=10)
+        action_frame.pack(fill='x', padx=10, pady=(0, 10))
+        # Cambiar rol
+        tk.Label(action_frame, text="Nuevo Rol:", font=FONTS['label'], bg=self.colors['white']).pack(side='left')
         self.update_role_var = tk.StringVar()
-        self.update_role_combo = ttk.Combobox(control_frame, textvariable=self.update_role_var,
+        self.update_role_combo = ttk.Combobox(action_frame, textvariable=self.update_role_var,
                                              values=role_options, state='readonly', width=25)
         self.update_role_combo.pack(side='left', padx=5)
-        tk.Button(control_frame, text="Actualizar Rol", bg=self.colors['accent'], fg=self.colors['white'],
-                   command=self._update_user_role).pack(side='left', padx=5)
-        # Botones de editar y eliminar usuario seleccionado
-        tk.Button(control_frame, text="✏️ Editar Nombre", bg=self.colors['primary'], fg=self.colors['white'],
+        tk.Button(action_frame, text="Actualizar Rol", bg=self.colors['accent'], fg=self.colors['white'],
+                  command=self._update_user_role).pack(side='left', padx=5)
+        # Editar nombre
+        tk.Button(action_frame, text="✏️ Editar Nombre", bg=self.colors['primary'], fg=self.colors['white'],
                   command=self._edit_user).pack(side='left', padx=5)
-        tk.Button(control_frame, text="🗑️ Eliminar Usuario", bg=self.colors['danger'], fg=self.colors['white'],
+        # Eliminar usuario
+        tk.Button(action_frame, text="🗑️ Eliminar Usuario", bg=self.colors['danger'], fg=self.colors['white'],
                   command=self._delete_user).pack(side='left', padx=5)
         # Inicializar lista
         self._refresh_users_table()
@@ -537,7 +540,8 @@ class AgrovetApplication:
                 return  # Cancelado o vacío
 
             # Actualizar nombre de usuario
-            self.user_manager.editar_nombre(username, nuevo_nombre)
+            # Llamar al método correcto para actualizar nombre
+            self.user_manager.actualizar_nombre(username, nuevo_nombre)
 
             messagebox.showinfo("Éxito", "Nombre de usuario actualizado exitosamente.")
             self._refresh_users_table()  # Refrescar tabla
@@ -567,6 +571,18 @@ class AgrovetApplication:
             self._refresh_users_table()  # Refrescar tabla
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo eliminar el usuario: {e}")
+    
+    def _show_user_menu(self, event):
+        """Mostrar menú contextual al hacer clic con el botón derecho sobre un usuario."""
+        # Identificar fila bajo el cursor
+        row_id = self.users_tree.identify_row(event.y)
+        if row_id:
+            # Seleccionar fila y mostrar menú
+            self.users_tree.selection_set(row_id)
+            try:
+                self.user_menu.tk_popup(event.x_root, event.y_root)
+            finally:
+                self.user_menu.grab_release()
 
 
 def main(rol_usuario=None):

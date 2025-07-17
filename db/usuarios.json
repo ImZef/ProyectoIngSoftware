@@ -3,5 +3,10 @@
         "username": "jose",
         "nombre": "jose",
         "rol_id": "4"
+    },
+    {
+        "username": "carlos",
+        "nombre": "carlos",
+        "rol_id": "2"
     }
 ]

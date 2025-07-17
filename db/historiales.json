@@ -89,5 +89,19 @@
                 "comentarios": "Aplicar sobre el lomo una vez al mes durante la temporada de lluvias"
             }
         ]
+    },
+    {
+        "id_cliente": "9",
+        "nombre_cliente": "Gabriel",
+        "nombre_mascota": "paquito",
+        "registros": [
+            {
+                "fecha": "17/07/2025",
+                "hora": "01:43:45",
+                "diagnostico": "Infección bacteriana de piel",
+                "tratamiento": "Antibiótico",
+                "comentarios": "Administrar 1 ml por cada 30kg"
+            }
+        ]
     }
 ]
