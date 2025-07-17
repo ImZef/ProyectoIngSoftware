@@ -1,0 +1,24 @@
+[
+    {
+        "cliente": "juan",
+        "descripcion": "pedido",
+        "fecha": "11/07/2025 08:57:52"
+    },
+    {
+        "cliente": "Jose",
+        "contacto": "1111111111",
+        "tipo": "consulta",
+        "fecha": "16/07/2025 17:44:36",
+        "descripcion": "Pulgas"
+    },
+    {
+        "cliente": "jose",
+        "contacto": "3113524969",
+        "tipo": "venta",
+        "fecha": "16/07/2025 17:47:43",
+        "producto_codigo": 122,
+        "producto_nombre": "Vitamina AD3E Inyectable",
+        "cantidad": 1,
+        "forma_pago": "efectivo"
+    }
+]

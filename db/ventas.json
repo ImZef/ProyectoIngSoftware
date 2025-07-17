@@ -1,0 +1,80 @@
+[
+    {
+        "cliente": "Ana Torres",
+        "forma_pago": "efectivo",
+        "fecha_venta": "2025-07-15 17:16:25",
+        "productos": [
+            {
+                "codigo": 124,
+                "nombre": "Concentrado Purina Bovino 40kg",
+                "cantidad": 1,
+                "precio_unitario": 180000
+            }
+        ]
+    },
+    {
+        "cliente": "Andres ",
+        "forma_pago": "efectivo",
+        "fecha_venta": "2025-07-15 17:20:10",
+        "productos": [
+            {
+                "codigo": 124,
+                "nombre": "Concentrado Purina Bovino 40kg",
+                "cantidad": 1,
+                "precio_unitario": 180000
+            }
+        ]
+    },
+    {
+        "cliente": "Samuel",
+        "forma_pago": "tarjeta",
+        "fecha_venta": "2025-07-15 17:56:25",
+        "productos": [
+            {
+                "codigo": 126,
+                "nombre": "Shampoo Antipulgas",
+                "cantidad": 1,
+                "precio_unitario": 35000
+            }
+        ]
+    },
+    {
+        "cliente": "Carlos",
+        "forma_pago": "tarjeta",
+        "fecha_venta": "2025-07-16 09:48:47",
+        "productos": [
+            {
+                "codigo": 126,
+                "nombre": "Shampoo Antipulgas",
+                "cantidad": 1,
+                "precio_unitario": 35000
+            }
+        ]
+    },
+    {
+        "cliente": "Jose",
+        "forma_pago": "efectivo",
+        "fecha_venta": "2025-07-16 18:12:03",
+        "productos": [
+            {
+                "codigo": 122,
+                "nombre": "Vitamina AD3E Inyectable",
+                "cantidad": 1,
+                "precio_unitario": 120000
+            }
+        ]
+    },
+    {
+        "cliente": "Carlos Jimenez ",
+        "forma_pago": "tarjeta",
+        "fecha_venta": "2025-07-16 19:07:42",
+        "productos": [
+            {
+                "codigo": 122,
+                "nombre": "Vitamina AD3E Inyectable",
+                "cantidad": 1,
+                "precio_unitario": 120000
+            }
+        ]
+    }
+]

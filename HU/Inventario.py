@@ -67,65 +67,72 @@ class Inventario:
                 print("Error: La cantidad no puede ser negativa.")
                 return
             producto.set_cantidad(nueva_cantidad)
-            self.registrar_historial(producto, anterior, nueva_cantidad, motivo)
+            self.registrar_historial_stock(codigo, anterior, nueva_cantidad, motivo)
             self.guardar_en_json()
             print(f"Stock actualizado para '{producto.get_nombre()}' de {anterior} a {nueva_cantidad}.")
         else:
             print("Producto no encontrado.")
 
-    def registrar_historial(self, producto, anterior, nuevo, motivo):
-        registro = {
-            "codigo_producto": producto.get_codigo(),
-            "nombre_producto": producto.get_nombre(),
-            "stock_anterior": anterior,
-            "nuevo_stock": nuevo,
-            "motivo": motivo,
-            "fecha": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        }
+    def registrar_historial_stock(self, codigo, stock_anterior, nuevo_stock, motivo):
+        """Registrar un cambio en el historial de stock."""
+        historial = []
         try:
-            with open("historial_stock.json", "r") as archivo:
+            with open("db/historial_stock.json", "r") as archivo:
                 historial = json.load(archivo)
         except FileNotFoundError:
             historial = []
 
-        historial.append(registro)
-        with open("historial_stock.json", "w") as archivo:
+        producto = self.buscar_por_codigo(codigo)
+        entrada = {
+            "codigo_producto": codigo,
+            "nombre_producto": producto.get_nombre() if producto else "Producto desconocido",
+            "stock_anterior": stock_anterior,
+            "nuevo_stock": nuevo_stock,
+            "motivo": motivo,
+            "fecha": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        }
+
+        historial.append(entrada)
+        with open("db/historial_stock.json", "w") as archivo:
             json.dump(historial, archivo, indent=4)
+
+    def obtener_historial_stock(self):
+        """Obtener el historial completo de cambios de stock."""
+        try:
+            with open("db/historial_stock.json", "r") as archivo:
+                return json.load(archivo)
+        except FileNotFoundError:
+            return []
 
     def mostrar_historial(self):
         try:
-            with open("historial_stock.json", "r") as archivo:
+            with open("db/historial_stock.json", "r") as archivo:
                 historial = json.load(archivo)
                 for registro in historial:
                     print(f"{registro['fecha']} - {registro['nombre_producto']} - {registro['stock_anterior']} -> {registro['nuevo_stock']} | Motivo: {registro['motivo']}")
         except FileNotFoundError:
             print("No hay historial aún.")
 
-    def guardar_en_json(self, archivo="productos.json"):
-        productos_serializables = []
-        for p in self.productos:
-            producto_dict = {
-                "codigo": p.get_codigo(),
-                "nombre": p.get_nombre(),
-                "categoria": p.get_categoria(),
-                "descripcion": p.get_descripcion(),
-                "precio": p.get_precio(),
-                "cantidad": p.get_cantidad(),
-                "disponibilidad": p.get_disponibilidad(),
-                "fecha_vencimiento": p.get_fecha_vencimiento()
-            }
-            productos_serializables.append(producto_dict)
-
+    def guardar_en_json(self, archivo="db/productos.json"):
+        """Guardar la lista de productos en un archivo JSON."""
         with open(archivo, "w") as f:
-            json.dump(productos_serializables, f, indent=4)
-        print(f" Productos guardados en {archivo}.")
-
-    def cargar_desde_json(self, archivo="productos.json"):
+            json.dump([p.to_dict() for p in self.productos], f, indent=4)
+        
+    def cargar_desde_json(self, archivo="db/productos.json"):
         # Limpiar lista de productos antes de recargar
         self.productos.clear()
+        from pathlib import Path
         try:
-            with open(archivo, "r") as f:
-                productos_cargados = json.load(f)
+            if not Path(archivo).exists():
+                print(f" Archivo {archivo} no encontrado. Se iniciará inventario vacío.")
+                return
+
+            with open(archivo, "r", encoding="utf-8") as f:
+                contenido = f.read().strip()
+                if not contenido:
+                    print(f" Archivo {archivo} vacío. Inventario vacío.")
+                    return
+                productos_cargados = json.loads(contenido)
                 for p in productos_cargados:
                     producto = Producto(
                         p["codigo"],
@@ -138,5 +145,5 @@ class Inventario:
                     )
                     self.agregar_producto(producto)
             print(f" Productos cargados desde {archivo}.")
-        except FileNotFoundError:
-            print(f" Archivo {archivo} no encontrado. Se iniciará inventario vacío.")
+        except (FileNotFoundError, json.JSONDecodeError):
+            print(f" Archivo {archivo} dañado o vacío. Se iniciará inventario vacío.")

@@ -1,4 +1,6 @@
 class Producto:
+    productos = []  # Lista de todos los productos instanciados para acceso global en consola
+
     def __init__(self, codigo, nombre, categoria, descripcion, precio, cantidad, fecha_vencimiento):
         self.codigo = codigo
         self.nombre = nombre
@@ -8,6 +10,8 @@ class Producto:
         self.cantidad = cantidad
         self.disponibilidad = cantidad > 0
         self.fecha_vencimiento = fecha_vencimiento
+        # Registrar automáticamente cada instancia creada
+        Producto.productos.append(self)
 
     # Getters
     def get_codigo(self):
@@ -37,7 +41,24 @@ class Producto:
     # Setters
     def set_cantidad(self, cantidad):
         self.cantidad = cantidad
+        # Actualizar disponibilidad automáticamente
         self.disponibilidad = cantidad > 0
+
+    def set_disponibilidad(self, disponibilidad):
+        """Establecer manualmente la disponibilidad del producto."""
+        self.disponibilidad = bool(disponibilidad)
+
+    # Métodos de apoyo para la consola
+    @classmethod
+    def ver_productos(cls):
+        """Mostrar todos los productos registrados en la consola."""
+        if not cls.productos:
+            print("No hay productos cargados.")
+            return
+        print("\n--- Listado de productos ---")
+        for prod in cls.productos:
+            print(prod)
+            print("-" * 30)
 
     def __str__(self):
         return (
@@ -51,3 +72,16 @@ class Producto:
             f"  Disponibilidad: {'Sí' if self.disponibilidad else 'No'}\n"
             f"  Fecha de Vencimiento: {self.fecha_vencimiento}"
         )
+
+    # Nuevo método para JSON
+    def to_dict(self):
+        return {
+            "codigo": self.codigo,
+            "nombre": self.nombre,
+            "categoria": self.categoria,
+            "descripcion": self.descripcion,
+            "precio": self.precio,
+            "cantidad": self.cantidad,
+            "disponibilidad": self.disponibilidad,
+            "fecha_vencimiento": self.fecha_vencimiento,
+        }

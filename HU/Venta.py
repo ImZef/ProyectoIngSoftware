@@ -1,3 +1,4 @@
+
 import json
 from datetime import datetime
 from HU.Producto import Producto
@@ -50,24 +51,31 @@ class Venta:
         )
 
     @classmethod
-    def guardar_en_json(cls, archivo="ventas.json"):
+    def guardar_en_json(cls, archivo="db/ventas.json"):
         with open(archivo, "w") as f:
             json.dump([v.to_dict() for v in cls.ventas], f, indent=4)
 
     @classmethod
-    def cargar_desde_json(cls, archivo="ventas.json"):
+    def cargar_desde_json(cls, archivo="db/ventas.json"):
+        # Limpiar la lista para evitar duplicados si se llama varias veces en la misma sesión
+        cls.ventas.clear()
+        
+        import json, os
         try:
-            with open(archivo, "r") as f:
+            if not os.path.exists(archivo) or os.path.getsize(archivo) == 0:
+                return  # Nada que cargar
+            with open(archivo, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 for v in data:
                     productos = []
-                    for prod_data in v["productos"]:
+                    for prod_data in v.get("productos", []):
                         producto = next((p for p in Producto.productos if p.get_codigo() == prod_data["codigo"]), None)
                         if producto:
                             productos.append((producto, prod_data["cantidad"]))
                     fecha = datetime.strptime(v["fecha_venta"], "%Y-%m-%d %H:%M:%S")
                     cls(cliente=v["cliente"], productos_vendidos=productos, forma_pago=v["forma_pago"], fecha_venta=fecha)
-        except FileNotFoundError:
+        except (FileNotFoundError, json.JSONDecodeError):
+            # Si el archivo está corrupto o no es JSON válido, lo ignoramos para no interrumpir la app.
             pass
     @classmethod
     def registrar_venta(cls):
@@ -162,3 +170,7 @@ class Venta:
         else:
             print("Venta no encontrada.")
 
+    @classmethod
+    def filtrar_por_cliente(cls, nombre_cliente):
+        """Devuelve una lista de ventas correspondientes a un cliente (filtro por coincidencia insensible a mayúsculas)."""
+        return [v for v in cls.ventas if nombre_cliente.lower() in v.cliente.lower()]  # type: ignore[attr-defined]

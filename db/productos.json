@@ -1,0 +1,112 @@
+[
+    {
+        "codigo": 121,
+        "nombre": "Ivermectina 1%",
+        "categoria": "Desparasitante",
+        "descripcion": "Antiparasitario inyectable de amplio espectro",
+        "precio": 150000,
+        "cantidad": 20,
+        "disponibilidad": true,
+        "fecha_vencimiento": "19/08/2027"
+    },
+    {
+        "codigo": 122,
+        "nombre": "Vitamina AD3E Inyectable",
+        "categoria": "Suplemento",
+        "descripcion": "Suplemento vitam\u00ednico para bovinos y equinos",
+        "precio": 120000,
+        "cantidad": 6,
+        "disponibilidad": true,
+        "fecha_vencimiento": "10/03/2026"
+    },
+    {
+        "codigo": 123,
+        "nombre": "Antibi\u00f3tico Tilmicosina",
+        "categoria": "Medicamento",
+        "descripcion": "Antibi\u00f3tico de amplio espectro para ganado",
+        "precio": 180000,
+        "cantidad": 15,
+        "disponibilidad": true,
+        "fecha_vencimiento": "05/12/2025"
+    },
+    {
+        "codigo": 124,
+        "nombre": "Concentrado Purina Bovino 40kg",
+        "categoria": "Alimento",
+        "descripcion": "Alimento balanceado para engorde de ganado",
+        "precio": 180000,
+        "cantidad": 50,
+        "disponibilidad": true,
+        "fecha_vencimiento": "15/02/2026"
+    },
+    {
+        "codigo": 125,
+        "nombre": "Vacuna Triple Viral",
+        "categoria": "Vacuna",
+        "descripcion": "Vacuna canina contra moquillo, hepatitis y parvovirus",
+        "precio": 60000,
+        "cantidad": 25,
+        "disponibilidad": true,
+        "fecha_vencimiento": "01/09/2026"
+    },
+    {
+        "codigo": 126,
+        "nombre": "Shampoo Antipulgas",
+        "categoria": "Higiene",
+        "descripcion": "Champ\u00fa especializado para control de pulgas en mascotas",
+        "precio": 35000,
+        "cantidad": 4,
+        "disponibilidad": true,
+        "fecha_vencimiento": "20/05/2027"
+    },
+    {
+        "codigo": 127,
+        "nombre": "Desparasitante Fenbendazol 10%",
+        "categoria": "Desparasitante",
+        "descripcion": "Antiparasitario interno para bovinos",
+        "precio": 90000,
+        "cantidad": 4,
+        "disponibilidad": true,
+        "fecha_vencimiento": "07/07/2026"
+    },
+    {
+        "codigo": 128,
+        "nombre": "Insecticida Pour-on",
+        "categoria": "Control de plagas",
+        "descripcion": "Soluci\u00f3n t\u00f3pica para control de moscas y garrapatas",
+        "precio": 130000,
+        "cantidad": 2,
+        "disponibilidad": true,
+        "fecha_vencimiento": "11/11/2025"
+    },
+    {
+        "codigo": 129,
+        "nombre": "Term\u00f3metro Digital Veterinario",
+        "categoria": "Herramienta",
+        "descripcion": "Instrumento de medici\u00f3n de temperatura animal",
+        "precio": 45000,
+        "cantidad": 10,
+        "disponibilidad": true,
+        "fecha_vencimiento": "N/A"
+    },
+    {
+        "codigo": 130,
+        "nombre": "Sales Mineralizadas 25kg",
+        "categoria": "Suplemento",
+        "descripcion": "Mezcla mineral para mejorar la nutrici\u00f3n en pastoreo",
+        "precio": 70000,
+        "cantidad": 0,
+        "disponibilidad": false,
+        "fecha_vencimiento": "30/08/2025"
+    },
+    {
+        "codigo": 131,
+        "nombre": "Purina",
+        "categoria": "Alimento",
+        "descripcion": "Alimento para perro",
+        "precio": 30.0,
+        "cantidad": 20,
+        "disponibilidad": true,
+        "fecha_vencimiento": "07/07/2026"
+    }
+]

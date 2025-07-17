@@ -1,13 +1,14 @@
 from HU.Producto import Producto
 from HU.Inventario import Inventario
 from HU.HistoriaClinica import HistoriaClinica
-from Proxinterfaz.Menu_principal import MenuPrincipal
+from Consola.Menu_principal import MenuPrincipal
 
 # Crear el inventario
 mi_inventario = Inventario()
 mi_inventario.cargar_desde_json()  
 
 # ====== Datos de muestra solo si el inventario está vacío ======
+# Crear datos de muestra solo si no existen productos ni historiales
 if not mi_inventario.productos:
     producto1 = Producto(121, "Ivermectina 1%", "Desparasitante", "Antiparasitario inyectable de amplio espectro", 150000, 20, "19/08/2027")
     producto2 = Producto(122, "Vitamina AD3E Inyectable", "Suplemento", "Suplemento vitamínico para bovinos y equinos", 120000, 30, "10/03/2026")
@@ -35,33 +36,23 @@ if not mi_inventario.productos:
     # Guardar después de cargar muestra inicial
     mi_inventario.guardar_en_json()
 
+# Cargar historiales existentes desde JSON
+HistoriaClinica.cargar_historiales()
+
 # ====== Datos de muestra para historiales clínicos ======
-
-historia3 = HistoriaClinica("3", "Pedro Gómez", "Milagros")
-historia3.registrar_diagnostico("Deficiencia de vitaminas", "Vitamina AD3E Inyectable", "Aplicar 10 ml intramuscular una vez por semana durante 3 semanas")
-
-historia4 = HistoriaClinica("4", "Laura Sánchez", "Tornado")
-historia4.registrar_diagnostico("Infestación por parásitos internos", "Ivermectina 1%", "Administrar 1 ml por cada 50 kg de peso vivo vía subcutánea")
-
-historia5 = HistoriaClinica("5", "Carlos Rivas", "Rocky")
-historia5.registrar_diagnostico("Infección bacteriana de piel", "Antibiótico Tilmicosina", "Administrar 1 ml por cada 30 kg, una vez cada 72 horas durante una semana")
-
-historia6 = HistoriaClinica("6", "María López", "Michi")
-historia6.registrar_diagnostico("Pulgas y garrapatas", "Shampoo Antipulgas", "Aplicar cada 3 días durante dos semanas")
-
-historia7 = HistoriaClinica("7", "Luis Ramírez", "Lucero")
-historia7.registrar_diagnostico("Anemia nutricional", "Sales Mineralizadas 25kg", "Administrar 100g al día en la ración por 30 días")
-
-historia8 = HistoriaClinica("8", "Ana Torres", "Firulais Jr.")
-historia8.registrar_diagnostico("Garrapatas", "Insecticida Pour-on", "Aplicar sobre el lomo una vez al mes durante la temporada de lluvias")
+# Crear muestras sólo si no existen historiales
+if not HistoriaClinica.historiales:
+    HistoriaClinica._crear_historiales_muestra()
+    HistoriaClinica.guardar_historiales()
 
 # ==== Iniciar Menú Principal ====
-def main():
-    menu_principal = MenuPrincipal(mi_inventario)
+def main(rol_usuario=None):
+    """Función principal para ejecutar la interfaz de consola con rol de usuario."""
+    menu_principal = MenuPrincipal(mi_inventario, rol_usuario)
     menu_principal.mostrar_menu()
-
-    # Guardar el inventario antes de salir
+    # Guardar inventario e historiales antes de salir
     mi_inventario.guardar_en_json()
+    HistoriaClinica.guardar_historiales()
 
 if __name__ == "__main__":
     main()

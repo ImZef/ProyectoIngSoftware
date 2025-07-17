@@ -33,6 +33,10 @@ ICONS = {
     'history': '📋',
     'clinical': '🩺',
     'sales': '💰',
+    'appointments': '📅',  # Nuevo icono para el módulo de citas
+    'users': '👥',         # Nuevo icono para el módulo de gestión de usuarios
+    'request': '📄',       # Icono para registrar solicitudes
+    'receipt': '🧾',       # Icono para comprobantes de venta
     'add': '➕',
     'edit': '✏️',
     'update': '🔄',
