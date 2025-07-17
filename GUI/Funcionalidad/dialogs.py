@@ -5,7 +5,7 @@ Dialog windows for AgroVet Plus application.
 import json
 import tkinter as tk
 import tkinter as tk
-from tkinter import messagebox, scrolledtext, ttk
+from tkinter import messagebox, scrolledtext, ttk, simpledialog
 
 # -------- Intento de importar selector de fecha -------------
 try:
@@ -486,6 +486,24 @@ class PurchaseHistoryWindow(BaseDialog):
 
         # Doble clic para ver detalle
         self.tree.bind('<Double-1>', self._on_double_click)
+        # Botón para anular venta
+        btn_frame = tk.Frame(frm, bg=self.colors['light_gray'])
+        btn_frame.pack(fill='x', pady=10)
+        tk.Button(btn_frame,
+                  text=f"{ICONS.get('delete', '🗑️')} Anular Venta",
+                  bg=self.colors['danger'],
+                  fg=self.colors['white'],
+                  font=FONTS['label'],
+                  command=self._delete_selected_sale
+                  ).pack(side='left', padx=5)
+        # Botón para editar venta
+        tk.Button(btn_frame,
+                  text=f"{ICONS.get('edit', '✏️')} Editar Venta",
+                  bg=self.colors['primary'],
+                  fg=self.colors['white'],
+                  font=FONTS['label'],
+                  command=self._edit_selected_sale
+                  ).pack(side='left', padx=5)
 
     def search(self):
         from datetime import datetime
@@ -556,6 +574,67 @@ class PurchaseHistoryWindow(BaseDialog):
         text.pack(fill='both', expand=True)
         text.insert(tk.END, str(venta))
         text.config(state='disabled')
+
+    # Method to delete selected sale
+    def _delete_selected_sale(self):
+        """Anula la venta seleccionada y revierte el inventario."""
+        sel = self.tree.selection()
+        if not sel:
+            messagebox.showerror("Error", "Seleccione una venta para anular")
+            return
+        idx = int(sel[0]) - 1
+        venta = self._ventas_mostradas[idx]
+        confirm = messagebox.askyesno("Confirmar Anulación", "¿Desea anular la venta seleccionada?")
+        if not confirm:
+            return
+        # Revertir inventario
+        for producto, cantidad in venta.productos_vendidos:
+            producto.set_cantidad(producto.get_cantidad() + cantidad)
+            producto.set_disponibilidad(True)
+        # Eliminar venta de la lista (remover instancia correcta)
+        try:
+            # Eliminar la venta seleccionada de la lista global
+            self.Venta.ventas.remove(venta)
+            # Guardar cambios en JSON
+            self.Venta.guardar_en_json()
+        except ValueError as e:
+            print(f"Error al anular venta: {e}")
+        messagebox.showinfo("Venta Anulada", "La venta ha sido anulada correctamente")
+        # Refrescar tabla de resultados
+        try:
+            self.search()
+        except:
+            pass
+    
+    def _edit_selected_sale(self):
+        """Edita la venta seleccionada mediante diálogos y guarda los cambios."""
+        sel = self.tree.selection()
+        if not sel:
+            messagebox.showerror("Error", "Seleccione una venta para editar")
+            return
+        idx = int(sel[0]) - 1
+        venta = self._ventas_mostradas[idx]
+        # Editar cliente
+        nuevo_cliente = simpledialog.askstring("Editar Cliente", "Nombre del cliente:", initialvalue=venta.cliente, parent=self.window)
+        if nuevo_cliente is None:
+            return
+        # Editar forma de pago
+        nuevo_pago = simpledialog.askstring("Editar Forma de Pago", "Forma de pago (efectivo, tarjeta):", initialvalue=venta.forma_pago, parent=self.window)
+        if nuevo_pago is None:
+            return
+        venta.cliente = nuevo_cliente.strip()
+        venta.forma_pago = nuevo_pago.strip().lower()
+        # Guardar cambios en JSON
+        try:
+            self.Venta.guardar_en_json()
+        except Exception as e:
+            print(f"Error al guardar venta editada: {e}")
+        messagebox.showinfo("Venta Actualizada", "La venta ha sido editada correctamente")
+        # Refrescar tabla de resultados
+        try:
+            self.search()
+        except:
+            pass
 
 # ==================== Nueva ventana: Registrar Cliente y Necesidad (HU14) ====================
 class RegisterNeedWindow(BaseDialog):

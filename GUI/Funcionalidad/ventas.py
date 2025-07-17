@@ -91,11 +91,11 @@ class SalesComponent:
                                       pady=15,
                                       relief='raised',
                                       bd=3)
-        new_sale_frame.pack(fill='x', pady=(0, 20))
+        new_sale_frame.pack(expand=True, anchor='n', pady=(0, 20))
         
         # Frame interno para centrar el formulario
         form_frame = tk.Frame(new_sale_frame, bg=self.colors['white'])
-        form_frame.pack(expand=True)
+        form_frame.pack(pady=10, anchor='center')
         
         # Configurar grid para el formulario con mejor espaciado
         form_frame.grid_columnconfigure(1, weight=1)
@@ -146,11 +146,11 @@ class SalesComponent:
         
         # Frame para botones - Centrado y con mejor distribución
         button_container = tk.Frame(new_sale_frame, bg=self.colors['white'])
-        button_container.pack(pady=20)
+        button_container.pack(pady=20, anchor='center')
         
         # Primera fila de botones
         button_row1 = tk.Frame(button_container, bg=self.colors['white'])
-        button_row1.pack(pady=5)
+        button_row1.pack(pady=5, anchor='center')
         
         btn_agregar = tk.Button(button_row1,
                  text="🛒 Agregar al Carrito",
@@ -180,7 +180,7 @@ class SalesComponent:
 
         # Segunda fila de botones
         button_row2 = tk.Frame(button_container, bg=self.colors['white'])
-        button_row2.pack(pady=5)
+        button_row2.pack(pady=5, anchor='center')
 
         btn_procesar = tk.Button(button_row2,
                  text="💳 Procesar Venta",
@@ -451,4 +451,4 @@ class SalesComponent:
     # Sobrescribir refresh_callback si se requiere desde afuera
     def external_refresh(self):
         """Método para ser llamado externamente cuando cambie el inventario."""
-        self._refresh_productos_combo() 
+        self._refresh_productos_combo()

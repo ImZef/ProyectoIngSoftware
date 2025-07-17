@@ -1,31 +1,5 @@
 [
     {
-        "cliente": "Ana Torres",
-        "forma_pago": "efectivo",
-        "fecha_venta": "2025-07-15 17:16:25",
-        "productos": [
-            {
-                "codigo": 124,
-                "nombre": "Concentrado Purina Bovino 40kg",
-                "cantidad": 1,
-                "precio_unitario": 180000
-            }
-        ]
-    },
-    {
-        "cliente": "Andres ",
-        "forma_pago": "efectivo",
-        "fecha_venta": "2025-07-15 17:20:10",
-        "productos": [
-            {
-                "codigo": 124,
-                "nombre": "Concentrado Purina Bovino 40kg",
-                "cantidad": 1,
-                "precio_unitario": 180000
-            }
-        ]
-    },
-    {
         "cliente": "Samuel",
         "forma_pago": "tarjeta",
         "fecha_venta": "2025-07-15 17:56:25",
@@ -65,15 +39,15 @@
         ]
     },
     {
-        "cliente": "Carlos Jimenez ",
-        "forma_pago": "tarjeta",
-        "fecha_venta": "2025-07-16 19:07:42",
+        "cliente": "Lara",
+        "forma_pago": "efectivo",
+        "fecha_venta": "2025-07-17 00:59:53",
         "productos": [
             {
-                "codigo": 122,
-                "nombre": "Vitamina AD3E Inyectable",
+                "codigo": 121,
+                "nombre": "Ivermectina 1%",
                 "cantidad": 1,
-                "precio_unitario": 120000
+                "precio_unitario": 150000
             }
         ]
     }

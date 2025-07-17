@@ -20,5 +20,12 @@
         "producto_nombre": "Vitamina AD3E Inyectable",
         "cantidad": 1,
         "forma_pago": "efectivo"
+    },
+    {
+        "cliente": "jose",
+        "contacto": "111111111",
+        "tipo": "consulta",
+        "fecha": "17/07/2025 00:15:23",
+        "descripcion": "Pulgas en mi perro"
     }
 ]

@@ -403,7 +403,13 @@ class AgrovetApplication:
         self.name_entry.grid(row=1, column=1, pady=5, padx=5)
         tk.Label(form_frame, text="Rol:", font=FONTS['label'], bg=self.colors['white']).grid(row=2, column=0, pady=5, sticky='e')
         roles = role_manager.get_available_roles()
-        role_options = [f"{rid}: {info['nombre']}" for rid, info in roles.items()]
+        # Orden descendente: primero IDs numéricos, luego alfanuméricos
+        numeric = [(rid, info) for rid, info in roles.items() if rid.isdigit()]
+        alpha = [(rid, info) for rid, info in roles.items() if not rid.isdigit()]
+        numeric_sorted = sorted(numeric, key=lambda kv: int(kv[0]), reverse=True)
+        alpha_sorted = sorted(alpha, key=lambda kv: kv[0], reverse=True)
+        sorted_roles = numeric_sorted + alpha_sorted
+        role_options = [f"{rid}: {info['nombre']}" for rid, info in sorted_roles]
         self.new_role_var = tk.StringVar()
         self.new_role_combo = ttk.Combobox(form_frame, textvariable=self.new_role_var, values=role_options,
                                            state='readonly', width=28)
@@ -429,7 +435,12 @@ class AgrovetApplication:
                                              values=role_options, state='readonly', width=25)
         self.update_role_combo.pack(side='left', padx=5)
         tk.Button(control_frame, text="Actualizar Rol", bg=self.colors['accent'], fg=self.colors['white'],
-                  command=self._update_user_role).pack(side='left', padx=5)
+                   command=self._update_user_role).pack(side='left', padx=5)
+        # Botones de editar y eliminar usuario seleccionado
+        tk.Button(control_frame, text="✏️ Editar Nombre", bg=self.colors['primary'], fg=self.colors['white'],
+                  command=self._edit_user).pack(side='left', padx=5)
+        tk.Button(control_frame, text="🗑️ Eliminar Usuario", bg=self.colors['danger'], fg=self.colors['white'],
+                  command=self._delete_user).pack(side='left', padx=5)
         # Inicializar lista
         self._refresh_users_table()
 
@@ -507,6 +518,55 @@ class AgrovetApplication:
             self._refresh_users_table()  # Refrescar tabla
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo actualizar el rol del usuario: {e}")
+
+    def _edit_user(self):
+        """Editar el nombre del usuario seleccionado."""
+        try:
+            # Obtener usuario seleccionado
+            selected_item = self.users_tree.selection()
+            if not selected_item:
+                messagebox.showwarning("Advertencia", "Seleccione un usuario de la tabla.")
+                return
+
+            # Obtener nombre actual
+            username = self.users_tree.item(selected_item, 'values')[0]
+
+            # Pedir nuevo nombre
+            nuevo_nombre = simpledialog.askstring("Editar Nombre", "Ingrese el nuevo nombre:", parent=self.root)
+            if not nuevo_nombre:
+                return  # Cancelado o vacío
+
+            # Actualizar nombre de usuario
+            self.user_manager.editar_nombre(username, nuevo_nombre)
+
+            messagebox.showinfo("Éxito", "Nombre de usuario actualizado exitosamente.")
+            self._refresh_users_table()  # Refrescar tabla
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo editar el usuario: {e}")
+
+    def _delete_user(self):
+        """Eliminar el usuario seleccionado."""
+        try:
+            # Obtener usuario seleccionado
+            selected_item = self.users_tree.selection()
+            if not selected_item:
+                messagebox.showwarning("Advertencia", "Seleccione un usuario de la tabla.")
+                return
+
+            # Confirmar eliminación
+            confirm = messagebox.askyesno("Confirmar Eliminación", "¿Está seguro de eliminar el usuario seleccionado?", parent=self.root)
+            if not confirm:
+                return
+
+            # Eliminar usuario
+            for item in selected_item:
+                username = self.users_tree.item(item, 'values')[0]
+                self.user_manager.eliminar_usuario(username)
+
+            messagebox.showinfo("Éxito", "Usuario eliminado exitosamente.")
+            self._refresh_users_table()  # Refrescar tabla
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo eliminar el usuario: {e}")
 
 
 def main(rol_usuario=None):

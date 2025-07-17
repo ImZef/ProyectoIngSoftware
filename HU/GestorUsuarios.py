@@ -59,3 +59,20 @@ class GestorUsuarios:
         usuario.rol_id = nuevo_rol_id
         self._guardar_usuarios()
         return usuario
+    
+    def actualizar_nombre(self, username: str, nuevo_nombre: str) -> Usuario:
+        """Actualizar el nombre de un usuario existente."""
+        usuario = next((u for u in self.usuarios if u.username == username), None)
+        if not usuario:
+            raise ValueError("Usuario no encontrado")
+        usuario.nombre = nuevo_nombre
+        self._guardar_usuarios()
+        return usuario
+
+    def eliminar_usuario(self, username: str) -> None:
+        """Eliminar un usuario existente por username."""
+        usuario = next((u for u in self.usuarios if u.username == username), None)
+        if not usuario:
+            raise ValueError("Usuario no encontrado")
+        self.usuarios.remove(usuario)
+        self._guardar_usuarios()

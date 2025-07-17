@@ -5,7 +5,7 @@
         "categoria": "Desparasitante",
         "descripcion": "Antiparasitario inyectable de amplio espectro",
         "precio": 150000,
-        "cantidad": 20,
+        "cantidad": 19,
         "disponibilidad": true,
         "fecha_vencimiento": "19/08/2027"
     },

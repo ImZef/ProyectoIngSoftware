@@ -182,5 +182,13 @@
         "nuevo_stock": 6,
         "motivo": "ventas",
         "fecha": "16/07/2025 19:07:42"
+    },
+    {
+        "codigo_producto": 121,
+        "nombre_producto": "Ivermectina 1%",
+        "stock_anterior": 20,
+        "nuevo_stock": 19,
+        "motivo": "ventas",
+        "fecha": "17/07/2025 00:59:53"
     }
 ]
